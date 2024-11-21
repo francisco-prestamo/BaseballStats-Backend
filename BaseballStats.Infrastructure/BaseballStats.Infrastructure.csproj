@@ -8,9 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
-      <Folder Include="Migrations\" />
-      <Folder Include="Repositories\" />
+      <Folder Include="Data\Configurations\" />
+      <Folder Include="Data\Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BaseballStats.Domain\BaseballStats.Domain.csproj" />
     </ItemGroup>
 
 </Project>
