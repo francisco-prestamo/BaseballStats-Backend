@@ -1,0 +1,14 @@
+# Default ignored files
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+/shelf/
+/workspace.xml
+
+# Visual Studio ignored files
+.vs
+
+# Rider ignored files
+.idea
