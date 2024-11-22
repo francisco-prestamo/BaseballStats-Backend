@@ -12,3 +12,5 @@ riderModule.iml
 
 # Rider ignored files
 .idea
+
+.fake
