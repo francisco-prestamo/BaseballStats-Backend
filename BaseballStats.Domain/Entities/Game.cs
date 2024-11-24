@@ -1,20 +1,20 @@
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class Game
+public class Game : Entity
 {
-    int Team1ID; // primary key attribute 1
-    Team Team1;
+    public required long Team1Id { get; set; } // primary key attribute 1
+    public Team Team1 { get; set; } = null!;
 
-    int Team2ID; // primary key attribute 2
-    Team Team2;
+    public required long Team2Id { get; set; } // primary key attribute 2
+    public Team Team2 { get; set; } = null!;
 
-    Date Date; // primary key attribute 3
+    public required DateOnly Date { get; set; } // primary key attribute 3
 
-    bool Winner1;
-    int Runs1;
-    int Runs2;
+    public bool Winner1 { get; set; }
+    public int Runs1 { get; set; }
+    public int Runs2 { get; set; }
 
     // Series Relation
-    int SeriesID;
-    Series Series;
+    public long SeriesId { get; set; }
+    public Series Series { get; set; } = null!;
 }

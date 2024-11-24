@@ -1,10 +1,9 @@
-namespace Entities
-{
-    class DirectionStaff
-    {
-        int ID; // primary key
-        string name;
+namespace BaseballStats.Domain.Entities;
 
-        List<Team> TeamsLead;
-    }
+public class DirectionStaff : Entity<long>
+{
+    public string Name { get; set; } = string.Empty;
+
+    // Teams that the staff is part of
+    public List<Team> TeamsLead = [];
 }

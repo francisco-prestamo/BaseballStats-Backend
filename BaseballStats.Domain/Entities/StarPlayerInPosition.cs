@@ -1,11 +1,11 @@
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class StarPlayerInPosition
+public class StarPlayerInPosition : Entity
 {
-    int PlayerID; // primary key attribute 1
-    string Position; // primary key attribute 2
-    PlayerInPosition PlayerInPosition;
+    public required long PlayerId { get; set; } // primary key attribute 1
+    public required string Position { get; set; } // primary key attribute 2
+    public PlayerInPosition PlayerInPosition { get; set; } = null!;
 
-    int SeriesID; // primary key attribute 3
-    Series Series;
+    public required long SeriesId { get; set; } // primary key attribute 3
+    public Series Series { get; set; } = null!;
 }

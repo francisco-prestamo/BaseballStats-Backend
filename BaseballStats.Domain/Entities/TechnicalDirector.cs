@@ -1,3 +1,11 @@
-namespace Entities;
+using BaseballStats.Domain.Enums;
 
-class TechnicalDirector : RegisteredUser {}
+namespace BaseballStats.Domain.Entities;
+
+public class TechnicalDirector : RegisteredUser
+{
+    public TechnicalDirector()
+    {
+        Type = UserTypes.TechnicalDirector;
+    }
+}

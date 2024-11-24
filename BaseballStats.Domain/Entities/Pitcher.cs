@@ -1,11 +1,9 @@
-using System;
+namespace BaseballStats.Domain.Entities;
 
-namespace Entities
+public class Pitcher : Player
 {
-    class Pitcher : Player {
-        int GamesWonNumber;
-        int GamesLostNumber;
-        bool RightHanded;
-        double AllowedRunsAvg;
-    }
+    public int GamesWonNumber { get; set; }
+    public int GamesLostNumber { get; set; }
+    public bool RightHanded { get; set; }
+    public double AllowedRunsAvg { get; set; }
 }

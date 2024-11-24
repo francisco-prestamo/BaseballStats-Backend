@@ -1,16 +1,13 @@
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class Series
+public class Series : Entity<long>
 {
-    int ID; // primary key
-    
-    // Season Relation
-    int SeasonId;
-    Season Season;
+    public string Name { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public DateOnly StartDate { get; set; }
+    public DateOnly EndDate { get; set; }
 
-    string Name;
-    string Type;
-    
-    Date StartDate;
-    Date EndDate;
+    // Season Relation
+    public required long SeasonId { get; set; }
+    public Season Season { get; set; } = null!;
 }

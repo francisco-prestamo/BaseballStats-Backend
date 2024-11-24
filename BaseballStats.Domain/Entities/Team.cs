@@ -1,15 +1,16 @@
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class Team
+public class Team : Entity<long>
 {
-    int ID; // primary key
-    string Name;
-    string Initials;
-    string RepresentedEntity;
-    string Color;
-
+    public string Name { get; set; } = string.Empty;
+    public string Initials { get; set; } = string.Empty;
+    public string RepresentedEntity { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
 
     // Technical Director Relation
-    int TechnicalDirectorId;
-    TechnicalDirector TechnicalDirector;
+    public long TechnicalDirectorId { get; set; }
+    public TechnicalDirector TechnicalDirector { get; set; } = null!;
+
+    // Direction Staff Relation
+    public List<DirectionStaff> DirectionStaffs = [];
 }

@@ -1,10 +1,12 @@
-using System;
+using BaseballStats.Domain.Enums;
+using BaseballStats.Domain.Interfaces.IEntity;
 
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class RegisteredUser
+public class RegisteredUser : IEntity
 {
-    string username; // primary key
-    string password;
-    string type;
+    public required long Id { get; set; } /* primary key */
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public UserTypes Type { get; set; }
 }

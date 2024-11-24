@@ -1,6 +1,5 @@
-namespace Entities;
+namespace BaseballStats.Domain.Entities;
 
-class Season 
+public class Season : Entity<long>
 {
-    int ID; // primary key
 }
