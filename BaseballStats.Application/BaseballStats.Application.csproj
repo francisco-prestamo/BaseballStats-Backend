@@ -13,4 +13,8 @@
       <Folder Include="Services\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints" Version="5.31.0" />
+    </ItemGroup>
+
 </Project>
