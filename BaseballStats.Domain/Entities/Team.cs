@@ -1,3 +1,5 @@
+using BaseballStats.Domain.Entities.Identity;
+
 namespace BaseballStats.Domain.Entities;
 
 public class Team : Entity<long>

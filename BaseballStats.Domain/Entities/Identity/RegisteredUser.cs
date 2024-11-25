@@ -1,7 +1,7 @@
 using BaseballStats.Domain.Enums;
 using BaseballStats.Domain.Interfaces.IEntity;
 
-namespace BaseballStats.Domain.Entities;
+namespace BaseballStats.Domain.Entities.Identity;
 
 public class RegisteredUser : IEntity
 {
