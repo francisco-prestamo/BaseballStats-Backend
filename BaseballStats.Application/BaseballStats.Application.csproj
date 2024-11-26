@@ -7,14 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\" />
-      <Folder Include="Features\" />
-      <Folder Include="Mappings\" />
       <Folder Include="Services\" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FastEndpoints" Version="5.31.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BaseballStats.Domain\BaseballStats.Domain.csproj" />
     </ItemGroup>
 
 </Project>
