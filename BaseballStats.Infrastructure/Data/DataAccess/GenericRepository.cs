@@ -3,20 +3,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DataAccess;
 
-public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+public class GenericRepository<TEntity>(AppDbContext context) : IGenericRepository<TEntity>
+    where TEntity : class
 {
-    private readonly AppDbContext _context;
-    private readonly DbSet<TEntity> _dbSet;
+    private readonly AppDbContext _context = context;
+    private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
-    public GenericRepository(AppDbContext context)
+    public IEnumerable<TEntity> Where(Func<TEntity, bool> predicate)
     {
-        _context = context;
-        _dbSet = context.Set<TEntity>();
+        return _dbSet.Where(predicate);
     }
 
-    public async Task<TEntity?> GetByIdAsync(int id)
+    public async Task<TEntity?> GetByIdAsync(long id)
     {
-        return await _dbSet.FindAsync();
+        return await _dbSet.FindAsync(id);
     }
 
     public async Task<List<TEntity>> GetAllAsync()
@@ -36,7 +36,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return Task.FromResult(entity);
     }
 
-    public async Task<TEntity?> DeleteAsync(int id)
+    public async Task<TEntity?> DeleteAsync(long id)
     {
         var entity = await _dbSet.FindAsync(id);
         if (entity != null)

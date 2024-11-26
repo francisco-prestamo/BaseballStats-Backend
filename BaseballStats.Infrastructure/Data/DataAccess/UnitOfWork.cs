@@ -2,44 +2,40 @@
 
 namespace Infrastructure.Data.DataAccess;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
-    private readonly AppDbContext _context;
-    private Dictionary<Type, object> _repositories;
-
-    public UnitOfWork(AppDbContext context)
-    {
-        _context = context;
-        _repositories = new Dictionary<Type, object>();
-    }
+    private readonly Dictionary<Type, object> _repositories = new();
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
     {
-        Type type = typeof(TEntity);
+        var type = typeof(TEntity);
 
-        if (!_repositories.ContainsKey(type))
-        {
-            Type implementationType = typeof(GenericRepository<>).MakeGenericType(typeof(TEntity));
+        if (_repositories.TryGetValue(type, out var repository))
+            return (IGenericRepository<TEntity>)repository;
 
-            object? instance = Activator.CreateInstance(implementationType, _context);
+        var implementationType = typeof(GenericRepository<>).MakeGenericType(typeof(TEntity));
 
-            if (instance != null)
-            {
-                _repositories.Add(type, instance);
-            }
-        }
+        var instance = Activator.CreateInstance(implementationType, context);
+
+        if (instance != null)
+            _repositories.Add(type, instance);
 
         return (IGenericRepository<TEntity>)_repositories[type];
     }
 
+    public int SaveChanges()
+    {
+        return context.SaveChanges();
+    }
+
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesAsync(cancellationToken);
     }
 
     public void Dispose()
     {
-        _context.Dispose();
+        context.Dispose();
         GC.SuppressFinalize(this); /* ??? */
     }
 }
