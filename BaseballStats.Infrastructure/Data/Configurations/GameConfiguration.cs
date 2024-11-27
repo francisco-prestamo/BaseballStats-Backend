@@ -8,7 +8,7 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 {
     public void Configure(EntityTypeBuilder<Game> builder)
     {
-        builder.HasKey(x => new { x.Team1Id, x.Team2Id, x.Date });
+        builder.HasIndex(x => new { x.Team1Id, x.Team2Id, x.Date }).IsUnique();
 
         builder.HasOne(x => x.Team1)
             .WithMany()
