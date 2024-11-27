@@ -1,6 +1,6 @@
 namespace BaseballStats.Domain.Entities;
 
-public class Game : Entity
+public class Game : Entity<long>
 {
     public required long Team1Id { get; set; } // primary key attribute 1
     public Team Team1 { get; set; } = null!;
