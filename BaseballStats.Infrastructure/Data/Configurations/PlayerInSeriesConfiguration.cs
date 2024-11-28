@@ -19,7 +19,7 @@ public class PlayerInSeriesConfiguration : IEntityTypeConfiguration<PlayerInSeri
             .HasForeignKey(x => x.SeriesId);
 
         builder.HasOne(x => x.Team)
-            .WithOne()
-            .HasForeignKey<PlayerInSeries>(x => x.TeamId);
+            .WithMany()
+            .HasForeignKey(x => x.TeamId);
     }
 }
