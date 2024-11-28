@@ -15,7 +15,7 @@ builder.Services
 builder.Services
     .AddFastEndpoints()
     .SwaggerDocument()
-    .AddDbContext<AppDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
+    .AddDbContext<AppDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection")); });
 
 var app = builder.Build();
 
