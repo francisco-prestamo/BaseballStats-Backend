@@ -1,5 +1,6 @@
 using BaseballStats.WebApi;
 using FastEndpoints;
+using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,26 @@ builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices();
 
+builder.Services.AddAuthenticationJwtBearer(options =>
+{
+    options.SigningKey = builder.Configuration["Jwt:Signing"];
+});
+builder.Services.AddAuthorization();
+
 builder.Services
     .AddFastEndpoints()
     .SwaggerDocument()
-    .AddDbContext<AppDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection")); });
+    .AddDbContext<AppDbContext>(options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection"));
+    });
+
 
 var app = builder.Build();
 
-app.UseFastEndpoints()
+app.UseAuthentication()
+    .UseAuthorization()
+    .UseFastEndpoints()
     .UseSwaggerGen();
 
 app.UseHttpsRedirection();
