@@ -9,6 +9,7 @@ public static class SeriesMapper
     {
         return new SeriesDto()
         {
+            Id = series.Id,
             Name = series.Name,
             Type = series.Type,
             StartDate = series.StartDate,

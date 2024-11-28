@@ -2,6 +2,7 @@
 
 public record GameDto
 {
+    public long Id { get; init; }
     public long Team1Id { get; init; }
     public long Team2Id { get; init; }
     public DateOnly Date { get; init; }
