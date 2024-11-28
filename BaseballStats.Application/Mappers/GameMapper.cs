@@ -9,6 +9,7 @@ public static class GameMapper
     {
         return new GameDto()
         {
+            Id = game.Id,
             Team1Id = game.Team1Id,
             Team2Id = game.Team2Id,
             Date = game.Date,
