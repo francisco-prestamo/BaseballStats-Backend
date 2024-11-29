@@ -9,12 +9,7 @@ public class GetSeasonsEndpoint : EndpointWithoutRequest<List<SeasonDto>>
     public override void Configure()
     {
         Get("seasons/");
-        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todas las temporadas");
-
-        /* Cuando haya que restringir acceso con roles
-         * Roles(["Admin", "Journalist", "TechnicalDirector"]);
-         */
     }
 
     public override async Task HandleAsync(CancellationToken ct)

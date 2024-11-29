@@ -8,8 +8,7 @@ public class RegisterUsersEndpoint : Endpoint<RegisterUserCommand, RegisterUserR
     public override void Configure()
     {
         Post("auth/register");
-        AllowAnonymous();
-        // Roles("Admin");
+        Roles("Admin");
         Summary(x => x.Summary = "Register a new user");
     }
 
