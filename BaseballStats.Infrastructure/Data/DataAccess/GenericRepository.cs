@@ -1,4 +1,6 @@
-﻿using BaseballStats.Domain.Interfaces.DataAccess;
+﻿using System.Linq.Expressions;
+using BaseballStats.Domain.Entities;
+using BaseballStats.Domain.Interfaces.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DataAccess;
@@ -12,6 +14,11 @@ public class GenericRepository<TEntity>(AppDbContext context) : IGenericReposito
     public IEnumerable<TEntity> Where(Func<TEntity, bool> predicate)
     {
         return _dbSet.Where(predicate);
+    }
+
+    public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 
     public async Task<TEntity?> GetByIdAsync(long id)
