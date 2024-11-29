@@ -1,4 +1,7 @@
-﻿namespace BaseballStats.Domain.Interfaces.DataAccess;
+﻿using System.Linq.Expressions;
+using BaseballStats.Domain.Entities;
+
+namespace BaseballStats.Domain.Interfaces.DataAccess;
 
 /// <summary>
 /// Generic repository interface for data access operations.
@@ -12,6 +15,8 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="predicate">The predicate to filter entities.</param>
     /// <returns>An IEnumerable of filtered entities.</returns>
     IEnumerable<TEntity> Where(Func<TEntity, bool> predicate);
+    
+    Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>
     /// Gets an entity by its identifier asynchronously.
