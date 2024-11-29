@@ -7,7 +7,6 @@ public class ExampleEndpoint : Endpoint<EmptyRequest, EmptyResponse>
     public override void Configure()
     {
         Get("api/example");
-        // AllowAnonymous();
     }
     
     public override async Task HandleAsync(EmptyRequest request, CancellationToken cancellationToken)

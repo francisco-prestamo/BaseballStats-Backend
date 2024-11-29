@@ -9,12 +9,7 @@ public class GetSeriesFromSeasonEndpoint : Endpoint<GetSeriesFromSeasonCommand, 
     public override void Configure()
     {
         Get("series/{SeasonId}/");
-        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todas las series de una temporada");
-
-        /* Cuando haya que restringir acceso con roles
-         * Roles(["Admin", "Journalist", "TechnicalDirector"]);
-         */
     }
 
     public override async Task HandleAsync(GetSeriesFromSeasonCommand command, CancellationToken ct)
