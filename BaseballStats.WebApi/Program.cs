@@ -15,7 +15,7 @@ builder.Services
 
 builder.Services.AddAuthenticationJwtBearer(options =>
 {
-    options.SigningKey = builder.Configuration["Jwt:Signing"];
+    options.SigningKey = builder.Configuration["Jwt:SigningKey"];
 });
 builder.Services.AddAuthorization();
 
