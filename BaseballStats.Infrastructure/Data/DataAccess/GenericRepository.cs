@@ -46,4 +46,10 @@ public class GenericRepository<TEntity>(AppDbContext context) : IGenericReposito
 
         return entity;
     }
+
+    public async Task<List<TEntity>> FromRawSqlAsync(string sql, params object[] parameters)
+    {
+        return await _dbSet.FromSqlRaw(sql, parameters).ToListAsync();
+    }
+
 }
