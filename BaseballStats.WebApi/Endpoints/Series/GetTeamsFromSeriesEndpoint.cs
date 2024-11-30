@@ -11,10 +11,6 @@ public class GetTeamsFromSeriesEndpoint : Endpoint<GetTeamsFromSeriesCommand, Li
         Get("series/{SeasonId}/{SeriesId}/teams");
         AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todos los equipos de una serie");
-
-        /* Cuando haya que restringir acceso con roles
-         * Roles(["Admin", "Journalist", "TechnicalDirector"]);
-         */
     }
 
     public override async Task HandleAsync(GetTeamsFromSeriesCommand command, CancellationToken ct)
