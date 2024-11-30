@@ -51,4 +51,16 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="id">The identifier of the entity to delete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the deleted entity if found; otherwise, null.</returns>
     Task<TEntity?> DeleteAsync(long id);
+
+
+    /// <summary>
+    /// Executes a raw SQL query to get entities asynchronously.
+    /// </summary>
+    /// <param name="sql">The raw SQL query.</param>
+    /// <param name="parameters">The parameters to pass to the SQL query.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a list of entities.</returns>
+    /// <remarks>
+    /// The SQL query should return all columns for the entity type.
+    /// </remarks>
+    Task<List<TEntity>> FromRawSqlAsync(string sql, params object[] parameters);
 }
