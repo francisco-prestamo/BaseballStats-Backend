@@ -8,7 +8,7 @@ public class LoginEndpoint : Endpoint<LoginCommand, RegisteredUserDto>
 {
     public override void Configure()
     {
-        Get("auth/login");
+        Post("auth/login");
         AllowAnonymous();
         Summary(x => x.Summary = "Login a user");
     }
