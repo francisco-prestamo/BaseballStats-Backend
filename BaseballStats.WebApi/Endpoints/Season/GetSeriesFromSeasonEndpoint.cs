@@ -9,6 +9,7 @@ public class GetSeriesFromSeasonEndpoint : Endpoint<GetSeriesFromSeasonCommand, 
     public override void Configure()
     {
         Get("series/{SeasonId}/");
+        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todas las series de una temporada");
     }
 

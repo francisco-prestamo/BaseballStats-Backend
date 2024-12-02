@@ -9,6 +9,7 @@ public class GetGamesFromSeriesEndpoint : Endpoint<GetGamesFromSeriesCommand, Li
     public override void Configure()
     {
         Get("series/{SeasonId}/{SeriesId}/games");
+        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todos los juegos de una serie");
     }
 

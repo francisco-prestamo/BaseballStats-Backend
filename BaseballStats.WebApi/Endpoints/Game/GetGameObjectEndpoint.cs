@@ -9,6 +9,7 @@ public class GetGameObjectEndpoint : Endpoint<GetGameObjectCommand, GameDto>
     public override void Configure()
     {
         Get("games/{GameId}");
+        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene el juego cuyo id es gameId");
     }
 
