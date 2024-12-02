@@ -13,6 +13,16 @@ builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+           .AllowCredentials());
+});
+
 builder.Services.AddAuthenticationJwtBearer(options =>
 {
     options.SigningKey = builder.Configuration["Jwt:SigningKey"];
@@ -29,6 +39,8 @@ builder.Services
 
 
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication()
     .UseAuthorization()
