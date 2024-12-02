@@ -9,6 +9,7 @@ public class GetSeasonsEndpoint : EndpointWithoutRequest<List<SeasonDto>>
     public override void Configure()
     {
         Get("seasons/");
+        AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todas las temporadas");
     }
 
