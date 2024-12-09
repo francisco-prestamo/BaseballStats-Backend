@@ -13,6 +13,8 @@ public class AlignedPlayerInGameConfiguration : IEntityTypeConfiguration<Aligned
 
         builder.HasKey(x => new { x.PlayerId, x.GameId, x.Position });
 
+        builder.Property(x => x.Position).HasConversion<string>();
+
         builder.HasOne(x => x.Player)
             .WithMany()
             .HasForeignKey(x => x.PlayerId);
