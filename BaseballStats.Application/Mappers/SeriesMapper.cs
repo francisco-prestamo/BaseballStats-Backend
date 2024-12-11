@@ -9,12 +9,12 @@ public static class SeriesMapper
     {
         return new SeriesDto()
         {
-            Id = series.Id,
-            Name = series.Name,
-            Type = series.Type,
-            StartDate = series.StartDate,
-            EndDate = series.EndDate,
-            SeasonId = series.SeasonId
+            id = series.Id,
+            name = series.Name,
+            type = series.Type,
+            startDate = series.StartDate,
+            sndDate = series.EndDate,
+            idSeason = series.SeasonId
         };
     }
 }

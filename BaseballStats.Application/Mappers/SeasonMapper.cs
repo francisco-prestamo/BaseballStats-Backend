@@ -9,7 +9,7 @@ public static class SeasonMapper
     {
         return new SeasonDto()
         {
-            Id = season.Id
+            id = season.Id
         };
     }
 }

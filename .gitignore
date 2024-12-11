@@ -14,3 +14,4 @@ riderModule.iml
 .idea
 
 .fake
+.env

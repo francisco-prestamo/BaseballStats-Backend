@@ -24,4 +24,15 @@ public interface IUnitOfWork : IDisposable
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries written to the database.</returns>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Executes the specified raw SQL query.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements returned by the query.</typeparam>
+    /// <param name="query">The raw SQL query.</param>
+    /// <returns>The elements returned by the query.</returns>
+    /// <remarks>
+    /// The query must return instances of the type specified by the type parameter <typeparamref name="T"/>.
+    /// </remarks>
+    List<T> FromRawSql<T>(string query);
 }

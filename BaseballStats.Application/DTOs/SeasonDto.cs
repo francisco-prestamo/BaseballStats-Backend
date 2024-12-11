@@ -2,5 +2,5 @@ namespace BaseballStats.Application.DTOs;
 
 public record SeasonDto
 {
-    public long Id { get; init; }
+    public long id { get; init; }
 }

@@ -5,18 +5,17 @@ namespace BaseballStats.Application.Mappers;
 
 public static class GameMapper
 {
-    public static GameDto ToDto(this Game game)
+    public static GameDto ToDto(this Game game, TeamDto team1, TeamDto team2)
     {
         return new GameDto()
         {
-            Id = game.Id,
-            Team1Id = game.Team1Id,
-            Team2Id = game.Team2Id,
-            Date = game.Date,
-            Winner1 = game.Winner1,
-            Runs1 = game.Runs1,
-            Runs2 = game.Runs2,
-            SeriesId = game.SeriesId
+            id = game.Id,
+            team1 = team1,
+            team2 = team2,
+            date = game.Date,
+            winTeam = game.Winner1,
+            team1Runs = game.Runs1,
+            team2Runs = game.Runs2,
         };
     }
 }
