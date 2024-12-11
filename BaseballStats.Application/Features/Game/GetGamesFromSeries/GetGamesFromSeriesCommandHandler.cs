@@ -32,7 +32,7 @@ public class GetGamesFromSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandH
 
         // get teams for the series
         var relevantTeams = teamRepository.Where(x => relevantTeamIds.Contains(x.Id)).Select(x => x.ToDto())
-           .ToList().ToDictionary(x => x.id);
+           .ToList().ToDictionary(x => x.Id);
 
         // games for the series
         var games = gameRepository.Where(x => x.SeriesId == seriesId);

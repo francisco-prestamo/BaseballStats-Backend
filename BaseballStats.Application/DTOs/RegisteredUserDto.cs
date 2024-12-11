@@ -2,9 +2,9 @@
 
 public record RegisteredUserDto
 {
-    public string username { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
-    public string? password {get; set;}
+    public string? Password {get; set;}
 
-    public string userType {get; set;} = null!;
+    public string UserType {get; set;} = null!;
 }
