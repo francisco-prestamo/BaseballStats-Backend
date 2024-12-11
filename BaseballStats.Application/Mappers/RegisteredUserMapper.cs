@@ -10,8 +10,8 @@ public static class RegisteredUserMapper
     {
         return new RegisteredUserDto()
         {
-           username = user.Username,
-           userType = user.Type.ToString()
+           Username = user.Username,
+           UserType = user.Type.ToString()
         };
     }
 }

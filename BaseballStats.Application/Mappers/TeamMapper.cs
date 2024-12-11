@@ -10,11 +10,11 @@ public static class TeamMapper
     {
         return new TeamDto()
         {
-            id = team.Id,
-            name = team.Name,
-            initials = team.Initials,
-            color = team.Color,
-            representedEntity = team.RepresentedEntity,
+            Id = team.Id,
+            Name = team.Name,
+            Initials = team.Initials,
+            Color = team.Color,
+            RepresentedEntity = team.RepresentedEntity,
         };
     }
 }

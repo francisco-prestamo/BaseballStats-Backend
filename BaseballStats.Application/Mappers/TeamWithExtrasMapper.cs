@@ -9,14 +9,14 @@ public static class TeamWithExtrasMapper
     {
         return new TeamWithExtrasDto()
         {
-            id = team.Id,
-            name = team.Name,
-            initials = team.Initials,
-            color = team.Color,
-            representedEntity = team.RepresentedEntity,
-            winGames = team.winGames,
-            loseGames = team.loseGames,
-            totalRuns = team.totalRuns
+            Id = team.Id,
+            Name = team.Name,
+            Initials = team.Initials,
+            Color = team.Color,
+            RepresentedEntity = team.RepresentedEntity,
+            WinGames = team.winGames,
+            LoseGames = team.loseGames,
+            TotalRuns = team.totalRuns
         };
     }
 }

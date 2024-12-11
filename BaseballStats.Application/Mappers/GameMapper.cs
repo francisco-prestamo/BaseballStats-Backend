@@ -9,13 +9,13 @@ public static class GameMapper
     {
         return new GameDto()
         {
-            id = game.Id,
-            team1 = team1,
-            team2 = team2,
-            date = game.Date,
-            winTeam = game.Winner1,
-            team1Runs = game.Runs1,
-            team2Runs = game.Runs2,
+            Id = game.Id,
+            Team1 = team1,
+            Team2 = team2,
+            Date = game.Date,
+            WinTeam = game.Winner1,
+            Team1Runs = game.Runs1,
+            Team2Runs = game.Runs2,
         };
     }
 }
