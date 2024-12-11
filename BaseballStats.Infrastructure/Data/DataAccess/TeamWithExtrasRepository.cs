@@ -50,17 +50,14 @@ public class TeamWithExtrasRepository(AppDbContext _context) : ITeamWithExtrasRe
     public IEnumerable<TeamWithExtras> GetTeamsWithExtrasWithPlayerInSeries(long SeriesId)
     {
         
-        #pragma warning disable 
-        // this warns us about possible sql injection with SeriesId, but it is a long and not a string
         return _context.Database.SqlQueryRaw<TeamWithExtras>($@"
             SELECT *
             FROM ({TeamWithExtrasQuery}) twe
             WHERE twe.""Id"" IN (
                     SELECT DISTINCT ""TeamId""
                     FROM ""PlayerInSeries"" pis
-                    WHERE pis.""SeriesId"" = {SeriesId}
+                    WHERE pis.""SeriesId"" = @seriesId
                 )
-        ");
-        #pragma warning restore
+        ", new Npgsql.NpgsqlParameter("@seriesId", SeriesId));
     }
 }
