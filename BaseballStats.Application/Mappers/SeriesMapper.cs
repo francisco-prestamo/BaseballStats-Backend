@@ -13,7 +13,7 @@ public static class SeriesMapper
             name = series.Name,
             type = series.Type,
             startDate = series.StartDate,
-            sndDate = series.EndDate,
+            endDate = series.EndDate,
             idSeason = series.SeasonId
         };
     }

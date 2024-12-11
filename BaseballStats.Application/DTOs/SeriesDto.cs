@@ -11,7 +11,7 @@ public record SeriesDto
 
     public DateOnly startDate { get; init; }
 
-    public DateOnly sndDate { get; init; }
+    public DateOnly endDate { get; init; }
 
 
 }
