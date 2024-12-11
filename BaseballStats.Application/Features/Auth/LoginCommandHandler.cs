@@ -1,4 +1,5 @@
 ﻿using BaseballStats.Application.DTOs;
+using BaseballStats.Application.Mappers;
 using BaseballStats.Domain.Entities.Identity;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
@@ -26,7 +27,7 @@ public class LoginCommandHandler(IUnitOfWork unitOfWork, IConfiguration config) 
             x.User.Claims.Add(("UserId", user.Id.ToString()));
         });
 
-        return new RegisteredUserDto(user!.Id, user.Username, token);
+        return user!.ToDto();
     }
 
     private async Task ValidateUser(LoginCommand command)

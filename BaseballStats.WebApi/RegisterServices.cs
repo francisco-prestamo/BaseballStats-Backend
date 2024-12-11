@@ -12,6 +12,7 @@ public static class RegisterServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITeamWithExtrasRepository, TeamWithExtrasRepository>();
         services.TryAddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         return services;
     }

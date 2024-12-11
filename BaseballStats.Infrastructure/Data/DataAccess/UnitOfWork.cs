@@ -1,10 +1,16 @@
 ﻿using BaseballStats.Domain.Interfaces.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.DataAccess;
 
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = new();
+
+    public List<T> FromRawSql<T>(string query)
+    {
+        return context.Database.SqlQueryRaw<T>(query).ToList<T>();
+    }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
     {

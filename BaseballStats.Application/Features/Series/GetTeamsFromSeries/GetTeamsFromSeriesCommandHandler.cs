@@ -8,28 +8,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Series.GetTeamsFromSeries;
 
-public class GetTeamsFromSeriesCommandHandler(IGenericRepository<Team> teamRepository, IUnitOfWork unitOfWork) : CommandHandler<GetTeamsFromSeriesCommand, List<TeamDto>>
+public class GetTeamsFromSeriesCommandHandler(ITeamWithExtrasRepository teamWithExtrasRepository, IUnitOfWork unitOfWork) : CommandHandler<GetTeamsFromSeriesCommand, List<TeamWithExtrasDto>>
 {
 
-    public override async Task<List<TeamDto>> ExecuteAsync(GetTeamsFromSeriesCommand command, CancellationToken cancellationToken = default)
+    public override async Task<List<TeamWithExtrasDto>> ExecuteAsync(GetTeamsFromSeriesCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
 
         var seriesId = command.SeriesId;
 
         // teams with at least one player in the series
-        var teams = await teamRepository.FromRawSqlAsync($@"
-            SELECT *
-            FROM ""Team"" ""t""
-            WHERE ""t"".""Id"" IN (
-                SELECT DISTINCT ""pis"".""TeamId""
-                FROM ""PlayerInSeries"" ""pis""
-                WHERE ""pis"".""SeriesId"" = {seriesId}
-            );
-        ");
+        var teams = teamWithExtrasRepository.GetTeamsWithExtrasWithPlayerInSeries(seriesId);
 
-        var teamsDto = teams.Select(x => x.ToDto());
-        return teamsDto.ToList();
+        var teamWithExtrasDtos = teams.Select(x => x.ToDto());
+        return teamWithExtrasDtos.ToList();
     }
 
     private async Task DatabaseValidations(GetTeamsFromSeriesCommand command)

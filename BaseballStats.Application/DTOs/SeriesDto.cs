@@ -2,15 +2,16 @@ namespace BaseballStats.Application.DTOs;
 
 public record SeriesDto
 {
-    public long Id { get; init; }
-    
-    public string Name { get; init; } = null!;
-    public  string Type { get; init; } = null!;
+    public long id { get; init; }
 
-    public DateOnly StartDate { get; init; }
+    public long idSeason { get; init; }
 
-    public DateOnly EndDate { get; init; }
+    public string name { get; init; } = null!;
+    public  string type { get; init; } = null!;
 
-    public long SeasonId { get; init; }
+    public DateOnly startDate { get; init; }
+
+    public DateOnly sndDate { get; init; }
+
 
 }
