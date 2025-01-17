@@ -1,5 +1,7 @@
-﻿using BaseballStats.Domain.Interfaces.DataAccess;
+﻿using BaseballStats.Domain.Entities;
+using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Game.Post;
 
@@ -7,6 +9,8 @@ public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pos
 {
     public override async Task<PostGameResponse> ExecuteAsync(PostGameCommand command, CancellationToken ct = new CancellationToken())
     {
+        await DatabaseValidations(command);
+
         var repository = unitOfWork.Repository<Domain.Entities.Game>();
 
         var game = new Domain.Entities.Game
@@ -34,5 +38,32 @@ public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pos
             Team2Runs = game.Runs2,
             SeriesId = game.SeriesId,
         };
+    }
+
+    private async Task DatabaseValidations(PostGameCommand command)
+    {
+        var teamRepository = unitOfWork.Repository<Team>();
+        var seriesRepository = unitOfWork.Repository<Domain.Entities.Series>();
+        var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
+
+        var team1 = await teamRepository.GetByIdAsync(command.Team1Id);
+
+        if (team1 is null)
+            ThrowError("Team1Id does not exist", StatusCodes.Status400BadRequest);
+
+        var team2 = await teamRepository.GetByIdAsync(command.Team2Id);
+
+        if (team2 is null)
+            ThrowError("Team2Id does not exist", StatusCodes.Status400BadRequest);
+
+        var series = await seriesRepository.GetByIdAsync(command.SeriesId);
+
+        if (series is null)
+            ThrowError("SeriesId does not exist", StatusCodes.Status400BadRequest);
+        
+        var game = await gameRepository.FirstOrDefaultAsync(x => x.Team1Id == command.Team1Id && x.Team2Id == command.Team2Id && x.Date != command.Date);
+        
+        if(game is not null)
+            ThrowError("There is already a game between those teams on that day", StatusCodes.Status400BadRequest);
     }
 }
