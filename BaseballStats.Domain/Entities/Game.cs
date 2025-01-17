@@ -2,13 +2,13 @@ namespace BaseballStats.Domain.Entities;
 
 public class Game : Entity<long>
 {
-    public required long Team1Id { get; set; } // primary key attribute 1
+    public required long Team1Id { get; set; }
     public Team Team1 { get; set; } = null!;
 
-    public required long Team2Id { get; set; } // primary key attribute 2
+    public required long Team2Id { get; set; }
     public Team Team2 { get; set; } = null!;
 
-    public required DateOnly Date { get; set; } // primary key attribute 3
+    public required DateOnly Date { get; set; }
 
     public bool Winner1 { get; set; }
     public int Runs1 { get; set; }
