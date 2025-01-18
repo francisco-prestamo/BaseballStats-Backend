@@ -10,7 +10,7 @@ public class GetTeamEndpoint : Endpoint<GetTeamCommand, TeamDto>
     {
         Get("teams/${seasonId}/${seriesId}/${teamId}");
         AllowAnonymous();
-        Summary(x => x.Summary = "Obtiene la información de un equipo");
+        Summary(x => x.Summary = "Obtiene la información de un equipo que participa en una serie");
     }
 
     public override async Task HandleAsync(GetTeamCommand command, CancellationToken ct)
