@@ -1,0 +1,21 @@
+using FastEndpoints;
+using BaseballStats.Application.DTOs;
+using BaseballStats.Application.Features.Team.GetTeam;
+
+namespace BaseballStats.WebApi.Endpoints.Team;
+
+public class GetTeamEndpoint : Endpoint<GetTeamCommand, TeamDto>
+{
+    public override void Configure()
+    {
+        Get("teams/${seasonId}/${seriesId}/${teamId}");
+        AllowAnonymous();
+        Summary(x => x.Summary = "Obtiene la información de un equipo");
+    }
+
+    public override async Task HandleAsync(GetTeamCommand command, CancellationToken ct)
+    {
+        var response = await command.ExecuteAsync(ct);
+        await SendAsync(response, StatusCodes.Status200OK, ct);
+    }
+}
