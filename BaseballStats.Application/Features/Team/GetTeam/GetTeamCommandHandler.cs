@@ -38,6 +38,9 @@ public class GetTeamCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetT
         if (series is null)
             ThrowError("SeriesId not found", StatusCodes.Status404NotFound);
 
+        if (series.SeasonId != command.SeasonId)
+            ThrowError("SeriesId doesn't belong to SeasonId", StatusCodes.Status400BadRequest);
+
         var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
 
         var relevantTeamIds = gameRepository.Where(x => x.SeriesId == command.SeriesId)
@@ -55,6 +58,6 @@ public class GetTeamCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetT
         }
 
         if (!found)
-            ThrowError("TeamId didn't play in SeriesId", StatusCodes.Status404NotFound);
+            ThrowError("TeamId didn't play in SeriesId", StatusCodes.Status400BadRequest);
     }
 }
