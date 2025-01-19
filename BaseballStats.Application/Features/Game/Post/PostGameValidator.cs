@@ -27,7 +27,7 @@ public class PostGameValidator : Validator<PostGameCommand>
             .NotEmpty().WithMessage("SeriesId is required.")
             .GreaterThan(0).WithMessage("SeriesId must be greater than 0.");
 
-        RuleFor(x => x.WinTeam).NotEmpty().WithMessage("WinTeam is required.");
+        RuleFor(x => x.WinTeam).NotNull().WithMessage("WinTeam is required.");
 
         RuleFor(x => x)
             .Must(ValidateRuns).WithMessage("Runs must be different and the win team must have more runs.");
