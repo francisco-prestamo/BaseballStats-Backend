@@ -1,8 +1,9 @@
-﻿using FastEndpoints;
+﻿using BaseballStats.Application.DTOs;
+using FastEndpoints;
 
 namespace BaseballStats.Application.Features.Game.Post;
 
-public record PostGameCommand : ICommand<PostGameResponse>
+public record PostGameCommand : ICommand<GameDto>
 {
     public long Team1Id { get; init; }
     public long Team2Id { get; init; }

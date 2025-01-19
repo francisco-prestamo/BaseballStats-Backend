@@ -1,13 +1,14 @@
-﻿using BaseballStats.Domain.Entities;
+﻿using BaseballStats.Application.DTOs;
+using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Game.Post;
 
-public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PostGameCommand, PostGameResponse>
+public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PostGameCommand, GameDto>
 {
-    public override async Task<PostGameResponse> ExecuteAsync(PostGameCommand command, CancellationToken ct = new CancellationToken())
+    public override async Task<GameDto> ExecuteAsync(PostGameCommand command, CancellationToken ct = new CancellationToken())
     {
         await DatabaseValidations(command);
 
@@ -27,7 +28,7 @@ public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pos
         await repository.AddAsync(game);
         await unitOfWork.SaveChangesAsync(ct);
 
-        return new PostGameResponse
+        return new GameDto
         {
             Id = game.Id,
             Team1Id = game.Team1Id,

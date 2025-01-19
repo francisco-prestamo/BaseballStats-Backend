@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Game.GetGamesFromSeries;
 
-public class GetGamesFromSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetGamesFromSeriesCommand, List<GameDto>>
+public class GetGamesFromSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetGamesFromSeriesCommand, List<GameWithTeamsDto>>
 {
-    public override async Task<List<GameDto>> ExecuteAsync(GetGamesFromSeriesCommand command, CancellationToken cancellationToken = default)
+    public override async Task<List<GameWithTeamsDto>> ExecuteAsync(GetGamesFromSeriesCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
 
