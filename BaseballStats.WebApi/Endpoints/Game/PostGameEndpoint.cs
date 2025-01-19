@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 
-public class PostGamesEndpoint : Endpoint<PostGameCommand, GameDto>
+public class PostGameEndpoint : Endpoint<PostGameCommand, GameDto>
 {
     public override void Configure()
     {

@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 
-public class DeleteGamesEndpoint : Endpoint<DeleteGameCommand, GameDto>
+public class DeleteGameEndpoint : Endpoint<DeleteGameCommand, GameDto>
 {
     public override void Configure()
     {
