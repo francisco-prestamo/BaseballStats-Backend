@@ -1,5 +1,6 @@
 ﻿using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Features.Game.GetGamesFromSeries;
+using BaseballStats.Application.Services;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Infrastructure.Data.DataAccess;
@@ -20,6 +21,7 @@ public static class RegisterServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddCommandHandlers();
+        services.AddScoped<TeamWithExtrasService>();
         return services;
     }
 

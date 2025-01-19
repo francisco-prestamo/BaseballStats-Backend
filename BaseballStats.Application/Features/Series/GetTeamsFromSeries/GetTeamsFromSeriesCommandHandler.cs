@@ -1,16 +1,15 @@
 using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Mappers;
-using BaseballStats.Domain.Entities;
+using BaseballStats.Application.Services;
 using BaseballStats.Domain.Interfaces.DataAccess;
-using BaseballStats.Domain.Interfaces.IEntity;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Series.GetTeamsFromSeries;
 
-public class GetTeamsFromSeriesCommandHandler(ITeamWithExtrasRepository teamWithExtrasRepository, IUnitOfWork unitOfWork) : CommandHandler<GetTeamsFromSeriesCommand, List<TeamWithExtrasDto>>
+public class GetTeamsFromSeriesCommandHandler(TeamWithExtrasService teamWithExtrasService, ITeamWithExtrasRepository teamWithExtrasRepository, IUnitOfWork unitOfWork)
+    : CommandHandler<GetTeamsFromSeriesCommand, List<TeamWithExtrasDto>>
 {
-
     public override async Task<List<TeamWithExtrasDto>> ExecuteAsync(GetTeamsFromSeriesCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
@@ -18,7 +17,8 @@ public class GetTeamsFromSeriesCommandHandler(ITeamWithExtrasRepository teamWith
         var seriesId = command.SeriesId;
 
         // teams with at least one player in the series
-        var teams = teamWithExtrasRepository.GetTeamsWithExtrasWithPlayerInSeries(seriesId);
+        // var teams = teamWithExtrasRepository.GetTeamsWithExtrasWithPlayerInSeries(seriesId);
+        var teams = await teamWithExtrasService.GetTeamsWithExtrasWithPlayerInSeriesAsync(seriesId);
 
         var teamWithExtrasDtos = teams.Select(x => x.ToDto());
         return teamWithExtrasDtos.ToList();
