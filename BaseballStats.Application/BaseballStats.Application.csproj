@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="FastEndpoints" Version="5.31.0" />
       <PackageReference Include="FastEndpoints.Security" Version="5.31.0" />
     </ItemGroup>

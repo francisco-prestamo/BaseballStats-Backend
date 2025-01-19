@@ -1,3 +1,5 @@
+using BaseballStats.Domain.ResultSets;
+
 namespace BaseballStats.Domain.Interfaces.DataAccess;
 
 public interface ITeamWithExtrasRepository
