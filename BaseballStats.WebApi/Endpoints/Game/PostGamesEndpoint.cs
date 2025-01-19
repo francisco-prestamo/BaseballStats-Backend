@@ -1,9 +1,10 @@
-﻿using BaseballStats.Application.Features.Game.Post;
+﻿using BaseballStats.Application.DTOs;
+using BaseballStats.Application.Features.Game.Post;
 using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 
-public class PostGamesEndpoint : Endpoint<PostGameCommand, PostGameResponse>
+public class PostGamesEndpoint : Endpoint<PostGameCommand, GameDto>
 {
     public override void Configure()
     {

@@ -25,7 +25,7 @@ public static class RegisterServices
 
     private static IServiceCollection AddCommandHandlers(this IServiceCollection services)
     {
-        services.AddScoped<ICommandHandler<GetGamesFromSeriesCommand, List<GameDto>>, GetGamesFromSeriesCommandHandler>();
+        services.AddScoped<ICommandHandler<GetGamesFromSeriesCommand, List<GameWithTeamsDto>>, GetGamesFromSeriesCommandHandler>();
         return services;
     }
 }

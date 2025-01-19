@@ -4,7 +4,7 @@ using BaseballStats.Application.Features.Game.GetGamesFromSeries;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 
-public class GetGamesFromSeriesEndpoint : Endpoint<GetGamesFromSeriesCommand, List<GameDto>>
+public class GetGamesFromSeriesEndpoint : Endpoint<GetGamesFromSeriesCommand, List<GameWithTeamsDto>>
 {
     public override void Configure()
     {
