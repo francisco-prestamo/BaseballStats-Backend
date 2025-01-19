@@ -1,5 +1,6 @@
 using BaseballStats.Application.DTOs;
 using BaseballStats.Domain.Entities;
+using BaseballStats.Domain.ResultSets;
 
 namespace BaseballStats.Application.Mappers;
 
@@ -14,9 +15,9 @@ public static class TeamWithExtrasMapper
             Initials = team.Initials,
             Color = team.Color,
             RepresentedEntity = team.RepresentedEntity,
-            WinGames = team.winGames,
-            LoseGames = team.loseGames,
-            TotalRuns = team.totalRuns
+            WinGames = team.WinGames,
+            LoseGames = team.LoseGames,
+            TotalRuns = team.TotalRuns
         };
     }
 }

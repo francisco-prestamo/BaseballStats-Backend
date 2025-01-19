@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using BaseballStats.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaseballStats.Domain.Interfaces.DataAccess;
 
@@ -9,13 +9,15 @@ namespace BaseballStats.Domain.Interfaces.DataAccess;
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 public interface IGenericRepository<TEntity> where TEntity : class
 {
+    public DbSet<TEntity> DbSet { get; }
+
     /// <summary>
     /// Filters entities based on a predicate.
     /// </summary>
     /// <param name="predicate">The predicate to filter entities.</param>
     /// <returns>An IEnumerable of filtered entities.</returns>
     IEnumerable<TEntity> Where(Func<TEntity, bool> predicate);
-    
+
     Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>

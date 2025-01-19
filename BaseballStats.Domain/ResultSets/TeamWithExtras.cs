@@ -1,4 +1,4 @@
-using BaseballStats.Domain.Entities;
+namespace BaseballStats.Domain.ResultSets;
 
 public class TeamWithExtras
 {
@@ -8,7 +8,7 @@ public class TeamWithExtras
     public string RepresentedEntity { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
     public long TechnicalDirectorId { get; set; }
-    public int winGames {get; set;}
-    public int loseGames {get; set;}
-    public int totalRuns {get; set;}
+    public int WinGames { get; set; }
+    public int LoseGames { get; set; }
+    public int TotalRuns { get; set; }
 }

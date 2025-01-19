@@ -1,6 +1,6 @@
-using BaseballStats.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using BaseballStats.Domain.Interfaces.DataAccess;
+using BaseballStats.Domain.ResultSets;
 
 namespace Infrastructure.Data.DataAccess;
 
