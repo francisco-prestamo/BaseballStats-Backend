@@ -1,6 +1,6 @@
 ﻿using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
-using BaseballStats.Domain.ResultSets;
+using BaseballStats.Application.ResultSets;
 
 namespace BaseballStats.Application.Services;
 

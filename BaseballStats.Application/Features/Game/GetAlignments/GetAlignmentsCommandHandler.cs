@@ -1,5 +1,6 @@
 using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Mappers;
+using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +17,6 @@ public class GetAlignmentsCommandHandler(IUnitOfWork unitOfWork) : CommandHandle
         var gameId = command.GameId;
 
         var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
-
         var games = gameRepository.Where(x => x.Id == gameId).ToList();
         var team1Id = games.First().Team1Id;
         var team2Id = games.First().Team2Id;
@@ -29,6 +29,18 @@ public class GetAlignmentsCommandHandler(IUnitOfWork unitOfWork) : CommandHandle
         var alignmentsDto = (playersTeam1, playersTeam2).ToDto();
 
         return alignmentsDto;
+    }
+
+    private PlayerInPositionDto GetPlayerInPosition(AlignedPlayerInGame alignedPlayerInGame)
+    {
+        var effectiveness = unitOfWork.Repository<PlayerInPosition>().Where(x => x.PlayerId == alignedPlayerInGame.PlayerId).First<PlayerInPosition>().Effectiveness;
+
+        return new PlayerInPositionDto()
+        {
+            Player = alignedPlayerInGame.Player.ToDto(),
+            Position = alignedPlayerInGame.Position,
+            Effectiveness = effectiveness
+        };
     }
 
     private async Task DatabaseValidations(GetAlignmentsCommand command)

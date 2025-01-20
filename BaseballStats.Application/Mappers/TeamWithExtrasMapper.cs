@@ -1,6 +1,5 @@
 using BaseballStats.Application.DTOs;
-using BaseballStats.Domain.Entities;
-using BaseballStats.Domain.ResultSets;
+using BaseballStats.Application.ResultSets;
 
 namespace BaseballStats.Application.Mappers;
 

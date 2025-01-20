@@ -1,19 +1,27 @@
 using BaseballStats.Application.DTOs;
-using BaseballStats.Domain.Entities;
+using BaseballStats.Application.ResultSets;
 
 namespace BaseballStats.Application.Mappers;
 
 public static class PlayerMapper
 {
-    public static PlayerDto ToDto(this Player player)
+    public static PlayerDto GetPlayerDto(this Alignment alignment)
     {
-        return new PlayerDto()
+        if (alignment.GamesLostNumber != null)
         {
-            Id = player.Id,
-            Name = player.Name,
-            Age = player.Age,
-            YearsOfExperience = player.YearsOfExperience,
-            BattingAverage = player.BattingAverage
-        };
+            return new PlayerDto()
+            {
+                Player = null,
+                Pitcher = alignment.GetPitcherDto()
+            };
+        }
+        else
+        {
+            return new PlayerDto()
+            {
+                Player = alignment.GetRegularPlayerDto(),
+                Pitcher = null
+            };
+        }
     }
 }

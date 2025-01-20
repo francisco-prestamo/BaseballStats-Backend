@@ -1,10 +1,7 @@
 namespace BaseballStats.Application.DTOs;
 
-public record PlayerDto
+public class PlayerDto
 {
-    public long Id { get; set; }
-    public string Name { get; set; } = null!;
-    public int Age { get; set; }
-    public int YearsOfExperience { get; set; }
-    public double? BattingAverage { get; set; }
+    public RegularPlayerDto? Player {get; set;}
+    public PitcherDto? Pitcher {get; set;}
 }
