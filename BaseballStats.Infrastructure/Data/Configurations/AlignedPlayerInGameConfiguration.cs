@@ -26,5 +26,9 @@ public class AlignedPlayerInGameConfiguration : IEntityTypeConfiguration<Aligned
         builder.HasOne(x => x.Team)
             .WithMany()
             .HasForeignKey(x => x.TeamId);
+   
+        builder.HasOne(x => x.PlayerInPosition)
+            .WithMany()
+            .HasForeignKey(x => new { x.PlayerId, x.Position });
     }
 }
