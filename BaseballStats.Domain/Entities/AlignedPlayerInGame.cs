@@ -14,5 +14,7 @@ namespace BaseballStats.Domain.Entities
         public Team Team { get; set; } = null!;
 
         public PlayerPositions Position { get; set; }
+    
+        public PlayerInPosition PlayerInPosition { get; set; } = null!;
     }
 }
