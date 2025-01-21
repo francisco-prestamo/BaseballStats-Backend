@@ -1,10 +1,10 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.Team.GetTeamGamesInThisSeries;
+namespace BaseballStats.Application.Features.TeamNamespace.GetTeamGamesInThisSeries;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public record GetTeamGamesInThisSeriesCommand : ICommand<List<GameDto>>
+public record GetTeamGamesInThisSeriesCommand : ICommand<List<GameWithTeamsDto>>
 {
     public long SeasonId { get; init; }
     public long SeriesId { get; init; }
