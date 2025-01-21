@@ -5,11 +5,11 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BaseballStats.Application.Features.Team.GetTeamGamesInThisSeries;
+namespace BaseballStats.Application.Features.TeamNamespace.GetTeamGamesInThisSeries;
 
-public class GetTeamGamesInThisSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetTeamGamesInThisSeriesCommand, List<GameDto>>
+public class GetTeamGamesInThisSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetTeamGamesInThisSeriesCommand, List<GameWithTeamsDto>>
 {
-    public override async Task<List<GameDto>> ExecuteAsync(GetTeamGamesInThisSeriesCommand command, CancellationToken cancellationToken = default)
+    public override async Task<List<GameWithTeamsDto>> ExecuteAsync(GetTeamGamesInThisSeriesCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
 

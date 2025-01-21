@@ -5,7 +5,7 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BaseballStats.Application.Features.Team.GetTeam;
+namespace BaseballStats.Application.Features.TeamNamespace.GetTeam;
 
 public class GetTeamCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetTeamCommand, TeamDto>
 {

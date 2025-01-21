@@ -1,10 +1,10 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.Team.GetTeamGamesInThisSeries;
+using BaseballStats.Application.Features.TeamNamespace.GetTeamGamesInThisSeries;
 
 namespace BaseballStats.WebApi.Endpoints.Team;
 
-public class GetTeamGamesInThisSeriesEndpoint : Endpoint<GetTeamGamesInThisSeriesCommand, List<GameDto>>
+public class GetTeamGamesInThisSeriesEndpoint : Endpoint<GetTeamGamesInThisSeriesCommand, List<GameWithTeamsDto>>
 {
     public override void Configure()
     {
