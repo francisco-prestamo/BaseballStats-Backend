@@ -1,19 +1,20 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.Player.GetPlayer;
+using BaseballStats.Application.Features.Player.GetPlayerOrPitcher;
+
 
 namespace BaseballStats.WebApi.Endpoints.Player;
 
-public class GetPlayerEndpoint : Endpoint<GetPlayerCommand, RegularPlayerDto>
+public class GetPlayerOrPitcherEndpoint : Endpoint<GetPlayerOrPitcherCommand, PlayerOrPitcherDto>
 {
     public override void Configure()
     {
         Get("players/{Id}");
         AllowAnonymous();
-        Summary(x => x.Summary = "Obtiene un jugador por Id");
+        Summary(x => x.Summary = "Obtiene un jugador o pitcher por Id");
     }
 
-    public override async Task HandleAsync(GetPlayerCommand command, CancellationToken ct)
+    public override async Task HandleAsync(GetPlayerOrPitcherCommand command, CancellationToken ct)
     {
         var response = await command.ExecuteAsync(ct);
         await SendAsync(response, StatusCodes.Status200OK, ct);
