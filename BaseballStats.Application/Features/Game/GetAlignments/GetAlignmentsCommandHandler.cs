@@ -4,10 +4,11 @@ using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using BaseballStats.Application.Services;
 
 namespace BaseballStats.Application.Features.Game.GetAlignments;
 
-public class GetAlignmentsCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetAlignmentsCommand, AlignmentsDto>
+public class GetAlignmentsCommandHandler(AlignmentService alignmentsService, IUnitOfWork unitOfWork) : CommandHandler<GetAlignmentsCommand, AlignmentsDto>
 {
     public override async Task<AlignmentsDto> ExecuteAsync(GetAlignmentsCommand command, CancellationToken cancellationToken = default)
     {
@@ -15,20 +16,14 @@ public class GetAlignmentsCommandHandler(IUnitOfWork unitOfWork) : CommandHandle
 
         var gameId = command.GameId;
 
-        var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
+        var game = (await unitOfWork.Repository<Domain.Entities.Game>().GetByIdAsync(gameId))!;
+        var team1Id = game.Team1Id;
+        var team2Id = game.Team2Id;
 
-        var games = gameRepository.Where(x => x.Id == gameId).ToList();
-        var team1Id = games.First().Team1Id;
-        var team2Id = games.First().Team2Id;
-        
-        var alignmentsRepository = unitOfWork.Repository<Domain.Entities.AlignedPlayerInGame>();
-    
-        var playersTeam1 = alignmentsRepository.Where(x => x.GameId == gameId && x.TeamId == team1Id).ToList();
-        var playersTeam2 = alignmentsRepository.Where(x => x.GameId == gameId && x.TeamId == team2Id).ToList();
+        var alignment1 = await alignmentsService.GetAlignmentsFromGame(gameId, team1Id);
+        var alignment2 = await alignmentsService.GetAlignmentsFromGame(gameId, team2Id);
 
-        var alignmentsDto = (playersTeam1, playersTeam2).ToDto();
-
-        return alignmentsDto;
+        return (team1Id, alignment1, team2Id, alignment2).ToDto();
     }
 
     private async Task DatabaseValidations(GetAlignmentsCommand command)
@@ -42,19 +37,5 @@ public class GetAlignmentsCommandHandler(IUnitOfWork unitOfWork) : CommandHandle
         var gameId = command.GameId;
 
         var games = gameRepository.Where(x => x.Id == gameId).ToList();
-        var team1Id = games.First().Team1Id;
-        var team2Id = games.First().Team2Id;
-    
-        var alignmentsRepository = unitOfWork.Repository<Domain.Entities.AlignedPlayerInGame>();
-        
-        var playersTeam1 = alignmentsRepository.Where(x => x.GameId == gameId && x.TeamId == team1Id);
-        
-        if (playersTeam1.IsNullOrEmpty())
-            ThrowError("Team1 Alignment not found", StatusCodes.Status404NotFound);
-
-        var playersTeam2 = alignmentsRepository.Where(x => x.GameId == gameId && x.TeamId == team2Id);
-
-        if (playersTeam2.IsNullOrEmpty())
-            ThrowError("Team2 Alignment not found", StatusCodes.Status404NotFound);
     }
 }

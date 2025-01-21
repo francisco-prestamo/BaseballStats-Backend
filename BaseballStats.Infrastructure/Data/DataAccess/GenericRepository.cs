@@ -53,4 +53,16 @@ public class GenericRepository<TEntity>(AppDbContext context) : IGenericReposito
 
         return entity;
     }
+
+    public IEnumerable<TEntity> DropWhere(Func<TEntity, bool> predicate)
+    {
+        var entities = DbSet.Where(predicate);
+        DbSet.RemoveRange(entities);
+        return entities;
+    } 
+
+    public void AddRange(IEnumerable<TEntity> entities)
+    {
+        DbSet.AddRange(entities);
+    }
 }

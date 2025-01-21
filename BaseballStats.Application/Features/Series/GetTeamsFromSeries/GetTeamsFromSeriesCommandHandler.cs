@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Series.GetTeamsFromSeries;
 
-public class GetTeamsFromSeriesCommandHandler(TeamWithExtrasService teamWithExtrasService, ITeamWithExtrasRepository teamWithExtrasRepository, IUnitOfWork unitOfWork)
+public class GetTeamsFromSeriesCommandHandler(TeamWithExtrasService teamWithExtrasService, IUnitOfWork unitOfWork)
+
     : CommandHandler<GetTeamsFromSeriesCommand, List<TeamWithExtrasDto>>
 {
     public override async Task<List<TeamWithExtrasDto>> ExecuteAsync(GetTeamsFromSeriesCommand command, CancellationToken cancellationToken = default)

@@ -1,4 +1,4 @@
-namespace BaseballStats.Domain.ResultSets;
+namespace BaseballStats.Application.ResultSets;
 
 public class TeamWithExtras
 {

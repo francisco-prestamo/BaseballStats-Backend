@@ -53,4 +53,17 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="id">The identifier of the entity to delete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the deleted entity if found; otherwise, null.</returns>
     Task<TEntity?> DeleteAsync(long id);
+
+    /// <summary>
+    /// Deletes entities based on a predicate.
+    /// </summary>
+    /// <param name="predicate">The predicate to filter entities.</param>
+    /// <returns>The deleted entities</returns>
+    IEnumerable<TEntity> DropWhere(Func<TEntity, bool> predicate);
+
+    /// <summary>
+    /// Adds a collection of entities.
+    /// </summary>
+    /// <param name="entities">The entities to be added</param>
+    void AddRange(IEnumerable<TEntity> entities);
 }

@@ -1,6 +1,6 @@
 namespace BaseballStats.Application.DTOs;
 
-public record PlayerDto
+public record RegularPlayerDto
 {
     public long Id { get; set; }
     public string Name { get; set; } = null!;
