@@ -4,9 +4,9 @@ namespace BaseballStats.Application.DTOs;
 
 public class PlayerInPositionDto
 {
-    public PlayerDto Player {get; set;} = null!;
+    public RegularPlayerDto Player {get; set;} = null!;
 
-    public PlayerPositions Position {get; set;}
+    public string Position {get; set;} = null!;
 
     public double Effectiveness {get; set;}
     

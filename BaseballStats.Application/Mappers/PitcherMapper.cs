@@ -22,27 +22,4 @@ public static class PitcherMapper
         };
     }
 
-    public static PitcherDto GetPitcherDto(this Alignment alignment)
-    {
-        if (alignment.GamesLostNumber == null ||
-            alignment.GamesWonNumber == null || 
-            alignment.AllowedRunsAvg == null ||
-            alignment.RightHanded == null)
-        {
-            throw new Exception("The player is not a pitcher");
-        }
-
-        return new PitcherDto()
-        {
-            Id = alignment.PlayerId,
-            Name = alignment.PlayerName,
-            Age = alignment.PlayerAge,
-            YearsOfExperience = alignment.PlayerYearsOfExperience,
-            BattingAverage = alignment.PlayerBattingAverage,
-            GamesWonNumber = (int)alignment.GamesWonNumber,
-            GamesLostNumber = (int)alignment.GamesLostNumber,
-            RightHanded = (bool)alignment.RightHanded,
-            AllowedRunsAvg = (double)alignment.AllowedRunsAvg
-        };
-    }
 }

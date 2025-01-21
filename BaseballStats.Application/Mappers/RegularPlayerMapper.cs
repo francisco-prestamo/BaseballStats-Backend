@@ -22,11 +22,11 @@ public static class RegularPlayerMapper
     {
         return new RegularPlayerDto()
         {
-            Id = alignment.PlayerId,
-            Name = alignment.PlayerName,
-            Age = alignment.PlayerAge,
-            YearsOfExperience = alignment.PlayerYearsOfExperience,
-            BattingAverage = alignment.PlayerBattingAverage
+            Id = alignment.Id,
+            Name = alignment.Name,
+            Age = alignment.Age,
+            YearsOfExperience = alignment.YearsOfExperience,
+            BattingAverage = alignment.BattingAverage,
         };
     }
 

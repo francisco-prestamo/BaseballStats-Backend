@@ -16,4 +16,5 @@ public static class AlignmentsMapper
             Team2Alignment = alignments.Item4.Select(a => a.GetPlayerInPositionDto()).ToList()
         };
     }
+
 }
