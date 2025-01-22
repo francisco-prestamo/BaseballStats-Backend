@@ -8,7 +8,7 @@ public class GetTeamStarPlayersEndpoint : Endpoint<GetTeamStarPlayersCommand, Li
 {
     public override void Configure()
     {
-        Get("teams/${teamId}/serie/${seasonId}/${seriesId}/star-players");
+        Get("teams/{teamId}/serie/{seasonId}/{seriesId}/star-players");
         AllowAnonymous();
         Summary(x => x.Summary = "Obtiene los jugadores estrellas de un equipo que participa en una serie");
     }

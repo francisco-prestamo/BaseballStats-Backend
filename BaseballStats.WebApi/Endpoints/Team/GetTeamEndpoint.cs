@@ -8,7 +8,7 @@ public class GetTeamEndpoint : Endpoint<GetTeamCommand, TeamDto>
 {
     public override void Configure()
     {
-        Get("teams/${teamId}");
+        Get("teams/{teamId}");
         AllowAnonymous();
         Summary(x => x.Summary = "Obtiene la información de un equipo que participa en una serie");
     }
