@@ -6,39 +6,95 @@ using FastEndpoints;
 
 namespace BaseballStats.Application.Services;
 
-public class SubstitutionService(IUnitOfWork unitOfWork, AlignmentService alignmentService)
+public class SubstitutionService(IUnitOfWork unitOfWork)
 {
     public async Task<IEnumerable<SubstitutionWithPosition>> GetSubstitutionsWithExtrasAsync(long gameId, long teamId)
     {
-        var game = (await unitOfWork.Repository<Game>().GetByIdAsync(gameId))!;
-        var substitutionsRepository = unitOfWork.Repository<Substitution>();
-        var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
+        var substitutions_table = unitOfWork.Repository<Substitution>().DbSet;
+        var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
+        var alignment =
+            from apig in alignedPlayerInGame_table
+            where apig.GameId == gameId && apig.TeamId == teamId
+            select new InitialAlignment
+            {
+                PlayerId = apig.PlayerId,
+                Position = apig.Position
+            };
+
+
+        var substitutions = 
+            from s in substitutions_table
+            where s.GameId == gameId && s.TeamId == teamId
+            select s;
+        
+        return await Task.FromResult(GetSubstitutionWithPositions(alignment, substitutions));
+    }
+
+    public async Task<List<(long gameId, List<SubstitutionWithPosition>)>> GetSubstitutionsForTeamInSeries(long teamId, long seriesId)
+    {
+        var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
+        var game_table = unitOfWork.Repository<Game>().DbSet;
         var playerInSeries_table = unitOfWork.Repository<PlayerInSeries>().DbSet;
+        var substitution_table = unitOfWork.Repository<Substitution>().DbSet;
 
-        var seriesId = game.SeriesId;
 
-        var playersInTeam = 
-            from pis in playerInSeries_table
-            where pis.TeamId == teamId && pis.SeriesId == seriesId
-            select pis.PlayerId;
+        var initialAlignmentsOfTeamGamesInTheSeries = (
+            from apig in alignedPlayerInGame_table
+            join game in game_table on apig.GameId equals game.Id
+            where game.SeriesId == seriesId && apig.TeamId == teamId
+            select apig
+        ).ToList();
 
-        var playerInPosition = (
-            from p in playerInPosition_table
-            join pitId in playersInTeam on p.PlayerId equals pitId
-            select new { p.PlayerId, p.Position, p.Effectiveness }
-        ).ToDictionary(x => (x.PlayerId, x.Position));
+        var gamesInSeries =
+            from ia in initialAlignmentsOfTeamGamesInTheSeries
+            group ia by ia.GameId into g
+            select g.Key;
 
-        var alignment = alignmentService.GetAlignmentsFromGame(gameId, teamId);
+        var allTeamSubstitutionsInSeries = (
+            from s in substitution_table
+            join g in game_table on s.GameId equals g.Id
+            where g.SeriesId == seriesId && s.TeamId == teamId
+            select s
+        ).ToList();
 
+        var ret = new List<(long gameId, List<SubstitutionWithPosition>)>();
+        foreach (var gameId in gamesInSeries)
+        {
+            var initialAlignment =
+                from ia in initialAlignmentsOfTeamGamesInTheSeries
+                where ia.GameId == gameId
+                select new InitialAlignment
+                {
+                    PlayerId = ia.PlayerId,
+                    Position = ia.Position
+                };
+
+            var substitutions = 
+                from s in allTeamSubstitutionsInSeries
+                where s.GameId == gameId
+                select s;
+
+            var substitutionsWithPositions = GetSubstitutionWithPositions(initialAlignment.AsQueryable(), substitutions.AsQueryable());
+
+            ret.Add((gameId, substitutionsWithPositions));
+        }
+
+        return await Task.FromResult(ret);
+    }
+
+    private List<SubstitutionWithPosition> GetSubstitutionWithPositions(IQueryable<InitialAlignment> initialAlignment, IQueryable<Substitution> substitutions)
+    {
         Dictionary<long, PlayerPositions> positions = new();
-        foreach (var player in alignment.Result)
-            positions.Add(player.Id, player.Position);
+        foreach (var player in initialAlignment)
+            positions.Add(player.PlayerId, player.Position);
 
-        var substitutions = substitutionsRepository.Where(x => x.GameId == gameId && x.TeamId == teamId).ToList();
-        substitutions.Sort((x, y) => x.Time.CompareTo(y.Time));
+        var sortedSubstitutions = 
+            from s in substitutions
+            orderby s.Time ascending
+            select s;
 
         List<SubstitutionWithPosition> ret = new();
-        foreach (var substitution in substitutions)
+        foreach (var substitution in sortedSubstitutions)
         {
             var playerOutId = substitution.PlayerOutId;
             var oldPosition = positions[substitution.PlayerOutId];
@@ -57,6 +113,12 @@ public class SubstitutionService(IUnitOfWork unitOfWork, AlignmentService alignm
         }
 
         return ret;
+    }
+
+    private class InitialAlignment
+    {
+        public long PlayerId { get; set; }
+        public PlayerPositions Position { get; set; }
     }
 }
 

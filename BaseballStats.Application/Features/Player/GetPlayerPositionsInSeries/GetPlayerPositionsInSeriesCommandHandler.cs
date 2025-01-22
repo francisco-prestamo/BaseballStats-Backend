@@ -1,46 +1,54 @@
 using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Mappers;
 using BaseballStats.Application.ResultSets;
+using BaseballStats.Application.Services;
+using BaseballStats.Domain.Enums;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BaseballStats.Application.Features.Player.GetPlayerPositionsInSeries;
 
-public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetPlayerPositionsInSeriesCommand, List<PlayerInPositionDto>>
+public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork, SubstitutionService substitutionService) : CommandHandler<GetPlayerPositionsInSeriesCommand, List<PlayerInPositionDto>>
 {
     public override async Task<List<PlayerInPositionDto>> ExecuteAsync(GetPlayerPositionsInSeriesCommand command, CancellationToken ct = default)
     {
         await DatabaseValidations(command);
 
-        var player_table = unitOfWork.Repository<Domain.Entities.Player>().DbSet;
-        var alignedPlayerInGame_table = unitOfWork.Repository<Domain.Entities.AlignedPlayerInGame>().DbSet;
+        var playerInSeries_table = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
         var playerInPosition_table = unitOfWork.Repository<Domain.Entities.PlayerInPosition>().DbSet;
-        var game_table = unitOfWork.Repository<Domain.Entities.Game>().DbSet;
+        var player_table = unitOfWork.Repository<Domain.Entities.Player>().DbSet;
 
-        var gamesInThisSeries =
-            from g in game_table
-            where g.SeriesId == command.SeriesId
-            select g.Id;
+        var teamId = 
+            from pis in playerInSeries_table
+            where pis.PlayerId == command.PlayerId && pis.SeriesId == command.SeriesId
+            select pis.TeamId;
         
-        var positionsPlayed =
-            from apig in alignedPlayerInGame_table
-            join gits in gamesInThisSeries on apig.GameId equals gits
-            join pip in playerInPosition_table on new { apig.PlayerId, apig.Position } equals new { pip.PlayerId, pip.Position }
-            join p in player_table on apig.PlayerId equals p.Id
-            where apig.PlayerId == command.PlayerId
+        if (teamId.IsNullOrEmpty()){ // player is not assigned to any team in the series
+            return [];
+        }
+
+        var teamSubstitutionsInSeries = await substitutionService.GetSubstitutionsForTeamInSeries((long)teamId.First()!, command.SeriesId);
+        var playedPositions = GetPlayedPositions(command.PlayerId, teamSubstitutionsInSeries);
+
+        var result = (
+            from pp in playedPositions
+            join pip in playerInPosition_table on new {command.PlayerId, Position = pp} equals new {pip.PlayerId, pip.Position}
+            join p in player_table on pip.PlayerId equals p.Id
             select new Alignment
             {
-                Id = apig.PlayerId,
-                BattingAverage = p.BattingAverage,
+                Id = p.Id,
                 Name = p.Name,
                 Age = p.Age,
+                BattingAverage = p.BattingAverage,
                 YearsOfExperience = p.YearsOfExperience,
-                Position = apig.Position,
-                Effectiveness = pip.Effectiveness
-            };
+                Effectiveness = pip.Effectiveness,
+                Position = pp
+            }
+        ).Select(s => s.GetPlayerInPositionDto());
 
-        return positionsPlayed.Select(x => x.GetPlayerInPositionDto()).ToList();
+        return result.ToList();
     }
 
     private async Task DatabaseValidations(GetPlayerPositionsInSeriesCommand command)
@@ -63,5 +71,19 @@ public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork) : 
 
         if (series is null)
             ThrowError("SeriesId not found", StatusCodes.Status404NotFound);
+
     }
+
+    private List<PlayerPositions> GetPlayedPositions(long playerId, List<(long gameId, List<SubstitutionWithPosition> substitutions)> allSubstitutions)
+    {
+
+        var playedPositions = 
+            from s in allSubstitutions.Select(x => x.substitutions).SelectMany(x => x)
+            where s.PlayerInId == playerId || s.PlayerOutId == playerId
+            group s by s.Position into g
+            select g.Key;
+
+        return playedPositions.ToList();
+    }
+
 }
