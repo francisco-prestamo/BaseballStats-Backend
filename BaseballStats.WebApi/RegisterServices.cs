@@ -22,6 +22,7 @@ public static class RegisterServices
         services.AddCommandHandlers();
         services.AddScoped<TeamWithExtrasService>();
         services.AddScoped<AlignmentService>();
+        services.AddScoped<SubstitutionService>();
         return services;
     }
 
