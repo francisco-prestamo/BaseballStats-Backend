@@ -24,6 +24,8 @@ public class PutSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pu
 
         series = await seriesRepository.UpdateAsync(series);
 
+        await unitOfWork.SaveChangesAsync(ct);
+
         return series.ToDto();
     }
 
