@@ -1,4 +1,5 @@
 ﻿using BaseballStats.Application.DTOs;
+using BaseballStats.Application.Mappers;
 using BaseballStats.Domain.Entities.Identity;
 using BaseballStats.Domain.Enums;
 using BaseballStats.Domain.Interfaces.DataAccess;
@@ -16,7 +17,7 @@ public class RegisterUserCommandHandler(IUnitOfWork unitOfWork) : CommandHandler
         var userRepository = unitOfWork.Repository<RegisteredUser>();
 
         RegisteredUser user;
-        if (command.UserType == UserTypes.TechnicalDirector.ToString())
+        if (command.UserType.ToUserType() == UserTypes.TechnicalDirector)
         {
             user = new TechnicalDirector
             {
@@ -24,33 +25,28 @@ public class RegisterUserCommandHandler(IUnitOfWork unitOfWork) : CommandHandler
                 Password = command.Password,
             };
 
-            await userRepository.AddAsync(user);
+            user = await userRepository.AddAsync(user);
             var technicalDirectorRepository = unitOfWork.Repository<TechnicalDirector>();
             await technicalDirectorRepository.AddAsync((TechnicalDirector) user);
+            await unitOfWork.SaveChangesAsync(ct);
+
+            return user.ToDto();
+
         }
         else
-        {
-            if (! Enum.TryParse<UserTypes>(command.UserType, out var role) )
-                ThrowError("Invalid role, roles are 'Admin', 'TechnicalDirector' and 'Journalist'", StatusCodes.Status400BadRequest);
-            
+        {            
             user = new RegisteredUser
             {
                 Username = command.Username,
                 Password = command.Password,
-                Type = role
+                Type = command.UserType.ToUserType()
             };
 
-            await userRepository.AddAsync(user);
+            user = await userRepository.AddAsync(user);
+            await unitOfWork.SaveChangesAsync(ct);
 
+            return user.ToDto();
         }
-        
-        await unitOfWork.SaveChangesAsync(ct);
-        
-        return new RegisteredUserDto()
-        {
-            Username = user.Username,
-            UserType = user.Type.ToString()
-        };
         
     }
 

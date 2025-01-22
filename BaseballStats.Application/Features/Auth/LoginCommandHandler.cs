@@ -27,7 +27,10 @@ public class LoginCommandHandler(IUnitOfWork unitOfWork, IConfiguration config) 
             x.User.Claims.Add(("UserId", user.Id.ToString()));
         });
 
-        return user!.ToDto();
+        var userDto = user!.ToDto();
+        userDto.Token = token;
+
+        return userDto;
     }
 
     private async Task ValidateUser(LoginCommand command)
