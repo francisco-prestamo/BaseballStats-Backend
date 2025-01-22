@@ -4,7 +4,7 @@ namespace BaseballStats.Domain.Enums;
 
 public enum UserTypes
 {
-    [Display(Name = "Administrador")] Admin,
-    [Display(Name = "Director Técnico")] TechnicalDirector,
-    [Display(Name = "Periodista")] Journalist,
+    [Display(Name = "Admin")] Admin,
+    [Display(Name = "Technical-Director")] TechnicalDirector,
+    [Display(Name = "Journalist")] Journalist,
 }

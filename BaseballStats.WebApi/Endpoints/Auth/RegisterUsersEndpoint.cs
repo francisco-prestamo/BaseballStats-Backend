@@ -1,9 +1,10 @@
-﻿using BaseballStats.Application.Features.Auth;
+﻿using BaseballStats.Application.DTOs;
+using BaseballStats.Application.Features.Auth;
 using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Auth;
 
-public class RegisterUsersEndpoint : Endpoint<RegisterUserCommand, RegisterUserResponse>
+public class RegisterUsersEndpoint : Endpoint<RegisterUserCommand, RegisteredUserDto>
 {
     public override void Configure()
     {

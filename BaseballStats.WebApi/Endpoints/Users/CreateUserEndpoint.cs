@@ -10,7 +10,8 @@ public class CreateUserEndpoint : Endpoint<RegisterUserCommand, RegisteredUserDt
     {
         Post("/users");
         Roles("Admin");
-        Summary(x => x.Summary = "Create a new user");
+        // AllowAnonymous();
+        Summary(x => x.Summary = "Crea un nuevo usuario");
     }
 
     public override async Task HandleAsync(RegisterUserCommand command, CancellationToken ct)

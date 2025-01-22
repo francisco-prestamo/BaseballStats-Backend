@@ -11,7 +11,8 @@ public static class RegisteredUserMapper
         return new RegisteredUserDto()
         {
            Username = user.Username,
-           UserType = user.Type.ToString()
+           UserType = user.Type.GetDisplayName(),
+           Id = user.Id
         };
     }
 }
