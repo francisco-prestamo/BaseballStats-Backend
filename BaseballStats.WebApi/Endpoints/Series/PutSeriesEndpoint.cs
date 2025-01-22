@@ -8,7 +8,7 @@ public class PutSeriesEndpoint : Endpoint<PutSeriesCommand, SeriesDto>
 {
     public override void Configure()
     {
-        Put("series/{Id}");
+        Put("series/{SeasonId}/{Id}");
         AllowAnonymous();
         Summary(x => x.Summary = "Update a series");
     }

@@ -19,7 +19,7 @@ public class PutSeriesValidator : Validator<PutSeriesCommand>
 
         RuleFor(x => x.EndDate).NotEmpty().WithMessage("EndDate is required");
 
-        RuleFor(x => x.IdSeason)
+        RuleFor(x => x.SeasonId)
             .NotEmpty().WithMessage("IdSeason is required")
             .GreaterThan(0).WithMessage("IdSeason must be greater than 0");
     }
