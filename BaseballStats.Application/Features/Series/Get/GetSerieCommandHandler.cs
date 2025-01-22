@@ -23,5 +23,8 @@ public class GetSerieCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Get
 
         if (serie == null)
             ThrowError("Serie not found", StatusCodes.Status404NotFound);
+        
+        if (serie.SeasonId != command.SeasonId)
+            ThrowError("Serie not found in the season", StatusCodes.Status404NotFound);
     }
 }

@@ -20,7 +20,7 @@ public class PutSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pu
         series.Type = command.Type;
         series.StartDate = command.StartDate;
         series.EndDate = command.EndDate;
-        series.SeasonId = command.IdSeason;
+        series.SeasonId = command.SeasonId;
 
         series = await seriesRepository.UpdateAsync(series);
 
@@ -33,8 +33,11 @@ public class PutSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pu
 
         if (series == null)
             ThrowError("Series not found", StatusCodes.Status404NotFound);
+        
+        if(series.SeasonId != command.SeasonId)
+            ThrowError("Series not found in the season", StatusCodes.Status404NotFound);
 
-        var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.IdSeason);
+        var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.SeasonId);
 
         if (season == null)
             ThrowError("Season not found", StatusCodes.Status400BadRequest);

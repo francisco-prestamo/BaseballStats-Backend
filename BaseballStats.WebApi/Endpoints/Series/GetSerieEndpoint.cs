@@ -8,7 +8,7 @@ public class GetSerieEndpoint : Endpoint<GetSerieCommand, SeriesDto>
 {
     public override void Configure()
     {
-        Get("series/{Id}");
+        Get("series/{SeasonId}/{Id}");
         AllowAnonymous();
         Summary(x => x.Summary = "Get a series by Id");
     }

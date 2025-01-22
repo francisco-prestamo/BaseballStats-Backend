@@ -8,7 +8,7 @@ public class PostSeriesEndpoint : Endpoint<PostSeriesCommand, SeriesDto>
 {
     public override void Configure()
     {
-        Post("series");
+        Post("series/{SeasonId}");
         AllowAnonymous();
         Summary(x => x.Summary = "Create a new series");
     }
