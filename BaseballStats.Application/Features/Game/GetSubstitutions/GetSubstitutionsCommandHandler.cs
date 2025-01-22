@@ -5,12 +5,13 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using BaseballStats.Application.Services;
+using BaseballStats.Domain.Enums;
 
 namespace BaseballStats.Application.Features.Game.GetSubstitutions;
 
-public class GetSubstitutionsCommandHandler(TeamWithExtrasService teamWithExtrasService, IUnitOfWork unitOfWork) : CommandHandler<GetSubstitutionsCommand, SubstitutionsDto>
+public class GetSubstitutionsCommandHandler(SubstitutionService substitutionService, IUnitOfWork unitOfWork) : CommandHandler<GetSubstitutionsCommand, GameSubstitutionsDto>
 {
-    public override async Task<SubstitutionsDto> ExecuteAsync(GetSubstitutionsCommand command, CancellationToken cancellationToken = default)
+    public override async Task<GameSubstitutionsDto> ExecuteAsync(GetSubstitutionsCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
 
@@ -22,10 +23,11 @@ public class GetSubstitutionsCommandHandler(TeamWithExtrasService teamWithExtras
         var team1Id = games.First().Team1Id;
         var team2Id = games.First().Team2Id;
 
-        var substitutionsTeam1 = teamWithExtrasService.GetSubstitutionsWithExtrasAsync(gameId, team1Id).Result.ToList();
-        var substitutionsTeam2 = teamWithExtrasService.GetSubstitutionsWithExtrasAsync(gameId, team2Id).Result.ToList();
-
-        var substitutionsDto = (substitutionsTeam1, substitutionsTeam2).ToDto();
+        var substitutionsDto = new GameSubstitutionsDto()
+        {
+            Team1Substitutions = GetTeamSubstitutions(gameId, team1Id),
+            Team2Substitutions = GetTeamSubstitutions(gameId, team2Id)
+        };
 
         return substitutionsDto;
     }
@@ -37,5 +39,41 @@ public class GetSubstitutionsCommandHandler(TeamWithExtrasService teamWithExtras
 
         if (game is null)
             ThrowError("GameId not found", StatusCodes.Status404NotFound);
+    }
+
+    private List<SingleSubstitutionDto> GetTeamSubstitutions(long gameId, long teamId)
+    {
+        var substitutionsWithPosition = substitutionService.GetSubstitutionsWithExtrasAsync(gameId, teamId).Result.ToList();
+
+        var result = 
+            from swp in substitutionsWithPosition
+            select new SingleSubstitutionDto()
+            {
+                TeamId = teamId,
+                PlayerIn = GetPlayerInPositionDto(swp.PlayerInId, swp.Position),
+                PlayerOut = GetPlayerInPositionDto(swp.PlayerOutId, swp.Position),
+                Time = swp.Time
+            };
+        
+        return result.ToList();
+    }
+
+    private PlayerInPositionDto GetPlayerInPositionDto(long playerId, PlayerPositions position)
+    {
+        var player_table = unitOfWork.Repository<Domain.Entities.Player>().DbSet;
+        var playerInPosition_table = unitOfWork.Repository<Domain.Entities.PlayerInPosition>().DbSet;
+
+        var result = 
+            from p in player_table
+            join pip in playerInPosition_table on p.Id equals pip.PlayerId
+            where p.Id == playerId && pip.Position == position
+            select new PlayerInPositionDto
+            {
+                Player = p.ToDto(),
+                Position = pip.Position.GetDisplayName(),
+                Effectiveness = pip.Effectiveness
+            };
+        
+        return result.First();
     }
 }

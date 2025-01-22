@@ -6,7 +6,7 @@ using BaseballStats.Application.Mappers;
 
 namespace BaseballStats.Application.Services;
 
-public class TeamWithExtrasService(AlignmentService alignmentsService, IUnitOfWork unitOfWork)
+public class TeamWithExtrasService(IUnitOfWork unitOfWork)
 {
     public Task<IEnumerable<TeamWithExtras>> GetTeamsWithExtrasAsync()
     {
@@ -68,52 +68,5 @@ public class TeamWithExtrasService(AlignmentService alignmentsService, IUnitOfWo
         var teamWithExtrasEnumerable = teamsWithExtras.AsEnumerable().DistinctBy(x => x.Id);
 
         return Task.FromResult(teamWithExtrasEnumerable);
-    }
-
-    public Task<IEnumerable<DTOs.Substitution>> GetSubstitutionsWithExtrasAsync(long gameId, long teamId)
-    {
-        var game = unitOfWork.Repository<Game>().GetByIdAsync(gameId)!;
-        var substitutionsRepository = unitOfWork.Repository<Substitution>();
-        var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
-        var player_table = unitOfWork.Repository<Player>().DbSet;
-
-        var playerInPosition =
-            (from p in playerInPosition_table
-             select new { p.PlayerId, p.Position, p.Effectiveness }).ToDictionary(x => (x.PlayerId, x.Position));
-
-        var alignment = alignmentsService.GetAlignmentsFromGame(gameId, teamId);
-
-        Dictionary<long, (PlayerPositions, double)> positions = new();
-        foreach (var player in alignment.Result)
-            positions.Add(player.Id, (player.Position, player.Effectiveness));
-
-        var substitutions = substitutionsRepository.Where(x => x.GameId == gameId && x.TeamId == teamId).ToList();
-        substitutions.Sort((x, y) => x.Time.CompareTo(y.Time));
-
-        List<DTOs.Substitution> ret = new();
-        foreach (var substitution in substitutions)
-        {
-            var playerOut = new PlayerInPosition
-            {
-                PlayerId = substitution.PlayerOutId,
-                Position = positions[substitution.PlayerOutId].Item1,
-                Effectiveness = positions[substitution.PlayerOutId].Item2,
-            };
-
-            var oldPosition = positions[substitution.PlayerOutId].Item1;
-            
-            positions.Add(substitution.PlayerInId, (oldPosition, playerInPosition[(substitution.PlayerInId, oldPosition)].Effectiveness));
-
-            var playerIn = new PlayerInPosition
-            {
-                PlayerId = substitution.PlayerInId,
-                Position = positions[substitution.PlayerInId].Item1,
-                Effectiveness = positions[substitution.PlayerInId].Item2,
-            };
-
-            ret.Add(new DTOs.Substitution(teamId, playerIn, playerOut, substitution.Time));
-        }
-
-        return Task.FromResult(ret.AsEnumerable());
     }
 }

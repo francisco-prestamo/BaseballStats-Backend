@@ -4,7 +4,7 @@ using BaseballStats.Application.Features.Game.GetSubstitutions;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 
-public class GetSubstitutionsEndpoint : Endpoint<GetSubstitutionsCommand, SubstitutionsDto>
+public class GetSubstitutionsEndpoint : Endpoint<GetSubstitutionsCommand, GameSubstitutionsDto>
 {
     public override void Configure()
     {
