@@ -8,7 +8,7 @@ public class GetPlayerPositionsInSeriesEndpoint : Endpoint<GetPlayerPositionsInS
 {
     public override void Configure()
     {
-        Get("players/{PlayerId}/seasons/{SeasonId}/series/{SeriesId}/positions");
+        Get("players/{PlayerId}/season/{SeasonId}/series/{SeriesId}/positions");
         AllowAnonymous();
         Summary(x => x.Summary = "Obtiene las posiciones de un jugador en una serie");
     }

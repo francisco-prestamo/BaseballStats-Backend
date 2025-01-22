@@ -72,7 +72,7 @@ public class GetSubstitutionsCommandHandler(SubstitutionService substitutionServ
             {
                 Player = p.ToDto(),
                 Position = pip.Position.GetDisplayName(),
-                Effectiveness = pip.Effectiveness
+                Efectividad = pip.Effectiveness
             };
         
         return result.First();

@@ -12,7 +12,7 @@ public static class PlayerInPositionMapper
         {
             Player = alignment.GetRegularPlayerDto(),
             Position = alignment.Position.GetDisplayName(),
-            Effectiveness = alignment.Effectiveness,  
+            Efectividad = alignment.Effectiveness,  
         };
     }
 }

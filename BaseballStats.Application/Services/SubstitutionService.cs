@@ -30,7 +30,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         return await Task.FromResult(GetSubstitutionWithPositions(alignment, substitutions));
     }
 
-    public async Task<List<(long gameId, List<SubstitutionWithPosition>)>> GetSubstitutionsForTeamInSeries(long teamId, long seriesId)
+    public async Task<List<(long gameId, List<SubstitutionWithPosition> substitutionWithPositions, List<InitialAlignment> initialAlignments)>> GetInitialAlignmemntsAndSubstitutionsForTeamInSeries(long teamId, long seriesId)
     {
         var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
         var game_table = unitOfWork.Repository<Game>().DbSet;
@@ -45,6 +45,8 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
             select apig
         ).ToList();
 
+        System.Console.WriteLine(string.Join(", ", initialAlignmentsOfTeamGamesInTheSeries.Select(x => $"{x.GameId} - {x.PlayerId} - {x.Position}")));
+
         var gamesInSeries =
             from ia in initialAlignmentsOfTeamGamesInTheSeries
             group ia by ia.GameId into g
@@ -57,7 +59,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
             select s
         ).ToList();
 
-        var ret = new List<(long gameId, List<SubstitutionWithPosition>)>();
+        var ret = new List<(long gameId, List<SubstitutionWithPosition>, List<InitialAlignment>)>();
         foreach (var gameId in gamesInSeries)
         {
             var initialAlignment =
@@ -76,7 +78,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
 
             var substitutionsWithPositions = GetSubstitutionWithPositions(initialAlignment.AsQueryable(), substitutions.AsQueryable());
 
-            ret.Add((gameId, substitutionsWithPositions));
+            ret.Add((gameId, substitutionsWithPositions, initialAlignment.ToList()));
         }
 
         return await Task.FromResult(ret);
@@ -115,10 +117,10 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         return ret;
     }
 
-    private class InitialAlignment
-    {
-        public long PlayerId { get; set; }
-        public PlayerPositions Position { get; set; }
-    }
 }
 
+public class InitialAlignment
+{
+    public long PlayerId { get; set; }
+    public PlayerPositions Position { get; set; }
+}

@@ -29,8 +29,9 @@ public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork, Su
             return [];
         }
 
-        var teamSubstitutionsInSeries = await substitutionService.GetSubstitutionsForTeamInSeries((long)teamId.First()!, command.SeriesId);
-        var playedPositions = GetPlayedPositions(command.PlayerId, teamSubstitutionsInSeries);
+        var teamInitialAlignmentsAndSubstitutionsInSeries = await substitutionService.GetInitialAlignmemntsAndSubstitutionsForTeamInSeries((long)teamId.First()!, command.SeriesId);        
+        var playedPositions = GetPlayedPositions(command.PlayerId, teamInitialAlignmentsAndSubstitutionsInSeries);
+
 
         var result = (
             from pp in playedPositions
@@ -74,16 +75,32 @@ public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork, Su
 
     }
 
-    private List<PlayerPositions> GetPlayedPositions(long playerId, List<(long gameId, List<SubstitutionWithPosition> substitutions)> allSubstitutions)
+    private List<PlayerPositions> GetPlayedPositions(long playerId, List<(long gameId, List<SubstitutionWithPosition> substitutions, List<InitialAlignment> initialAlignments)> allSubstitutions)
     {
 
-        var playedPositions = 
+        var playedPositions = (
+            from p in allSubstitutions.Select(x => x.initialAlignments).SelectMany(x => x)
+            group p by p.Position into g
+            select g.Key
+        ).ToList();
+
+        
+        playedPositions.AddRange(
             from s in allSubstitutions.Select(x => x.substitutions).SelectMany(x => x)
             where s.PlayerInId == playerId || s.PlayerOutId == playerId
             group s by s.Position into g
-            select g.Key;
+            select g.Key
+        );
 
-        return playedPositions.ToList();
+        playedPositions = (
+            from p in playedPositions
+            group p by p into g
+            select g.Key
+        ).ToList();
+
+
+
+        return playedPositions;
     }
 
 }
