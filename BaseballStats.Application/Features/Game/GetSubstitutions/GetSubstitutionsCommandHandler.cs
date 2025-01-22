@@ -4,10 +4,11 @@ using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using BaseballStats.Application.Services;
 
 namespace BaseballStats.Application.Features.Game.GetSubstitutions;
 
-public class GetSubstitutionsCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetSubstitutionsCommand, SubstitutionsDto>
+public class GetSubstitutionsCommandHandler(TeamWithExtrasService teamWithExtrasService, IUnitOfWork unitOfWork) : CommandHandler<GetSubstitutionsCommand, SubstitutionsDto>
 {
     public override async Task<SubstitutionsDto> ExecuteAsync(GetSubstitutionsCommand command, CancellationToken cancellationToken = default)
     {
@@ -20,11 +21,9 @@ public class GetSubstitutionsCommandHandler(IUnitOfWork unitOfWork) : CommandHan
         var games = gameRepository.Where(x => x.Id == gameId).ToList();
         var team1Id = games.First().Team1Id;
         var team2Id = games.First().Team2Id;
-        
-        var substitutionsRepository = unitOfWork.Repository<Domain.Entities.Substitution>();
 
-        var substitutionsTeam1 = substitutionsRepository.Where(x => x.GameId == gameId && x.TeamId == team1Id).ToList();  
-        var substitutionsTeam2 = substitutionsRepository.Where(x => x.GameId == gameId && x.TeamId == team2Id).ToList();
+        var substitutionsTeam1 = teamWithExtrasService.GetSubstitutionsWithExtrasAsync(gameId, team1Id).Result.ToList();
+        var substitutionsTeam2 = teamWithExtrasService.GetSubstitutionsWithExtrasAsync(gameId, team2Id).Result.ToList();
 
         var substitutionsDto = (substitutionsTeam1, substitutionsTeam2).ToDto();
 

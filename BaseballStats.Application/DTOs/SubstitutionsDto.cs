@@ -1,12 +1,16 @@
+using BaseballStats.Domain.Entities;
+
 namespace BaseballStats.Application.DTOs;
 
-public class Substitution {
+public class Substitution
+{
     public long TeamId { get; set; }
-    public long PlayerIn { get; set; }
-    public long PlayerOut { get; set; }
+    public PlayerInPosition PlayerIn { get; set; }
+    public PlayerInPosition PlayerOut { get; set; }
     public TimeSpan Time { get; set; }
-    
-    public Substitution(long teamId, long playerIn, long playerOut, TimeSpan time) {
+
+    public Substitution(long teamId, PlayerInPosition playerIn, PlayerInPosition playerOut, TimeSpan time)
+    {
         TeamId = teamId;
         PlayerIn = playerIn;
         PlayerOut = playerOut;
