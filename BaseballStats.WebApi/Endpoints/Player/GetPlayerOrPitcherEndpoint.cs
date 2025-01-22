@@ -9,7 +9,7 @@ public class GetPlayerOrPitcherEndpoint : Endpoint<GetPlayerOrPitcherCommand, Pl
 {
     public override void Configure()
     {
-        Get("players/{Id}");
+        Get("players/orPitchers/{Id}");
         AllowAnonymous();
         Summary(x => x.Summary = "Obtiene un jugador o pitcher por Id");
     }
