@@ -12,14 +12,15 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
     {
         var substitutions_table = unitOfWork.Repository<Substitution>().DbSet;
         var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
-        var alignment =
+        
+        var alignment = (
             from apig in alignedPlayerInGame_table
             where apig.GameId == gameId && apig.TeamId == teamId
-            select new InitialAlignment
+            select new 
             {
-                PlayerId = apig.PlayerId,
-                Position = apig.Position
-            };
+                apig.PlayerId,
+                apig.Position
+            }).ToList().Select(x => (x.PlayerId, x.Position));
 
 
         var substitutions = 
@@ -30,7 +31,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         return await Task.FromResult(GetSubstitutionWithPositions(alignment, substitutions));
     }
 
-    public async Task<List<(long gameId, List<SubstitutionWithPosition> substitutionWithPositions, List<InitialAlignment> initialAlignments)>> GetInitialAlignmemntsAndSubstitutionsForTeamInSeries(long teamId, long seriesId)
+    public async Task<List<(long gameId, List<SubstitutionWithPosition> substitutionWithPositions, List<(long PlayerId, PlayerPositions Position)> initialAlignments)>> GetInitialAlignmemntsAndSubstitutionsForTeamInSeries(long teamId, long seriesId)
     {
         var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
         var game_table = unitOfWork.Repository<Game>().DbSet;
@@ -59,24 +60,24 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
             select s
         ).ToList();
 
-        var ret = new List<(long gameId, List<SubstitutionWithPosition>, List<InitialAlignment>)>();
+        var ret = new List<(long gameId, List<SubstitutionWithPosition>, List<(long PlayerId, PlayerPositions Position)>)>();
         foreach (var gameId in gamesInSeries)
         {
-            var initialAlignment =
+            var initialAlignment = (
                 from ia in initialAlignmentsOfTeamGamesInTheSeries
                 where ia.GameId == gameId
-                select new InitialAlignment
+                select new
                 {
                     PlayerId = ia.PlayerId,
                     Position = ia.Position
-                };
+                }).ToList().Select(x => (x.PlayerId, x.Position));
 
             var substitutions = 
                 from s in allTeamSubstitutionsInSeries
                 where s.GameId == gameId
                 select s;
 
-            var substitutionsWithPositions = GetSubstitutionWithPositions(initialAlignment.AsQueryable(), substitutions.AsQueryable());
+            var substitutionsWithPositions = GetSubstitutionWithPositions(initialAlignment, substitutions.AsQueryable());
 
             ret.Add((gameId, substitutionsWithPositions, initialAlignment.ToList()));
         }
@@ -84,7 +85,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         return await Task.FromResult(ret);
     }
 
-    private List<SubstitutionWithPosition> GetSubstitutionWithPositions(IQueryable<InitialAlignment> initialAlignment, IQueryable<Substitution> substitutions)
+    private List<SubstitutionWithPosition> GetSubstitutionWithPositions(IEnumerable<(long PlayerId, PlayerPositions Position)> initialAlignment, IQueryable<Substitution> substitutions)
     {
         Dictionary<long, PlayerPositions> positions = new();
         foreach (var player in initialAlignment)
@@ -117,10 +118,4 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         return ret;
     }
 
-}
-
-public class InitialAlignment
-{
-    public long PlayerId { get; set; }
-    public PlayerPositions Position { get; set; }
 }
