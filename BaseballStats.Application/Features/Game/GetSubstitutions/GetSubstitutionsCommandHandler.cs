@@ -49,7 +49,7 @@ public class GetSubstitutionsCommandHandler(SubstitutionService substitutionServ
             from swp in substitutionsWithPosition
             select new SingleSubstitutionDto()
             {
-                Id = (teamId, swp.PlayerInId, swp.PlayerOutId, swp.Time).GetHashCode(),
+                Id = (long)(teamId, swp.PlayerInId, swp.PlayerOutId, swp.Time).GetHashCode() + int.MaxValue,
                 TeamId = teamId,
                 PlayerIn = GetPlayerInPositionDto(swp.PlayerInId, swp.Position),
                 PlayerOut = GetPlayerInPositionDto(swp.PlayerOutId, swp.Position),

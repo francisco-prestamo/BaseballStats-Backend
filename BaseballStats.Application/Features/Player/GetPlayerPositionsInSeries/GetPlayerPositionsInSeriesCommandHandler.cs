@@ -75,7 +75,7 @@ public class GetPlayerPositionsInSeriesCommandHandler(IUnitOfWork unitOfWork, Su
 
     }
 
-    private List<PlayerPositions> GetPlayedPositions(long playerId, List<(long gameId, List<SubstitutionWithPosition> substitutions, List<InitialAlignment> initialAlignments)> allSubstitutions)
+    private List<PlayerPositions> GetPlayedPositions(long playerId, List<(long gameId, List<SubstitutionWithPosition> substitutions, List<(long PlayerId, PlayerPositions Position)> initialAlignments)> allSubstitutions)
     {
 
         var playedPositions = (
