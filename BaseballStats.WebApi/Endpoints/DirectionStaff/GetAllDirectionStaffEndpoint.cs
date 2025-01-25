@@ -8,7 +8,7 @@ public class GetAllDirectionStaffEndpoint : EndpointWithoutRequest<List<Directio
 {
     public override void Configure()
     {
-        Get("direct");
+        Get("DirectionMembers");
         AllowAnonymous();
         Summary(x => x.Summary = "Get all Direction Staff Members");
     }
