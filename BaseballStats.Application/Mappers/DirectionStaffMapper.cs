@@ -11,8 +11,7 @@ public static class DirectionStaffMapper
         return new DirectionStaffDto() 
         {
             Id = directionStaff.Id,
-            Name = directionStaff.Name,
-            TeamsLead = directionStaff.TeamsLead.Select(x => x.ToDto()).ToList()
+            Name = directionStaff.Name
         };
     }
 
