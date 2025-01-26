@@ -6,4 +6,5 @@ public class DirectionStaff : Entity<long>
 
     // Teams that the staff is part of
     public List<Team> TeamsLead = [];
+    public List<DirectionStaffTeam> DirectionStaffTeams = [];
 }

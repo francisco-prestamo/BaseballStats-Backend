@@ -18,6 +18,18 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
             .HasForeignKey(x => x.TechnicalDirectorId);
 
         builder.HasMany(x => x.DirectionStaffs)
-            .WithMany(x => x.TeamsLead);
+            .WithMany(x => x.TeamsLead)
+            .UsingEntity<DirectionStaffTeam>(
+                x => x.HasOne(x => x.DirectionStaff)
+                    .WithMany(x => x.DirectionStaffTeams)
+                    .HasForeignKey(x => x.DirectionStaffId),
+                x => x.HasOne(x => x.Team)
+                    .WithMany(x => x.DirectionStaffTeams)
+                    .HasForeignKey(x => x.TeamId)
+            );
+
+        builder.HasMany(x => x.DirectionStaffTeams)
+            .WithOne(x => x.Team)
+            .HasForeignKey(x => x.TeamId);
     }
 }
