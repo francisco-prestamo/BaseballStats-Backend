@@ -15,4 +15,5 @@ public class Team : Entity<long>
 
     // Direction Staff Relation
     public List<DirectionStaff> DirectionStaffs = [];
+    public List<DirectionStaffTeam> DirectionStaffTeams = [];
 }

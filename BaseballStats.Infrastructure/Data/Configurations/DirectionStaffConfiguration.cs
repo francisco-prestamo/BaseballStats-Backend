@@ -12,6 +12,18 @@ public class DirectionStaffConfiguration : IEntityTypeConfiguration<DirectionSta
             .HasMaxLength(255);
 
         builder.HasMany(x => x.TeamsLead)
-            .WithMany(x => x.DirectionStaffs);
+            .WithMany(x => x.DirectionStaffs)
+            .UsingEntity<DirectionStaffTeam>(
+                x => x.HasOne(x => x.Team)
+                    .WithMany(x => x.DirectionStaffTeams)
+                    .HasForeignKey(x => x.TeamId),
+                x => x.HasOne(x => x.DirectionStaff)
+                    .WithMany(x => x.DirectionStaffTeams)
+                    .HasForeignKey(x => x.DirectionStaffId)
+            );
+
+        builder.HasMany(x => x.DirectionStaffTeams)
+            .WithOne(x => x.DirectionStaff)
+            .HasForeignKey(x => x.DirectionStaffId);
     }
 }
