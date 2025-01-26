@@ -1,11 +1,11 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace BaseballStats.Application.Features.Player.Create;
+namespace BaseballStats.Application.Features.Player.Post;
 
-public class CreatePlayerValidator : Validator<CreatePlayerCommand>
+public class PostPlayerValidator : Validator<PostPlayerCommand>
 {
-    public CreatePlayerValidator()
+    public PostPlayerValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required");

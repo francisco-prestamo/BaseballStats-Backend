@@ -8,6 +8,6 @@ public class PlayerInPositionDto
 
     public string Position {get; set;} = null!;
 
-    public double Efectividad {get; set;}
+    public double Effectiveness {get; set;}
     
 }

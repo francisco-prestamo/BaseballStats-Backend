@@ -21,9 +21,9 @@ public class GenericRepository<TEntity>(AppDbContext context) : IGenericReposito
         return await DbSet.FirstOrDefaultAsync(predicate);
     }
 
-    public async Task<TEntity?> GetByIdAsync(long id)
+    public async Task<TEntity?> GetByIdAsync(params object[] keyValues)
     {
-        return await DbSet.FindAsync(id);
+        return await DbSet.FindAsync(keyValues);
     }
 
     public async Task<List<TEntity>> GetAllAsync()
@@ -43,9 +43,9 @@ public class GenericRepository<TEntity>(AppDbContext context) : IGenericReposito
         return Task.FromResult(entity);
     }
 
-    public async Task<TEntity?> DeleteAsync(long id)
+    public async Task<TEntity?> DeleteAsync(params object[] keyValues)
     {
-        var entity = await DbSet.FindAsync(id);
+        var entity = await DbSet.FindAsync(keyValues);
         if (entity != null)
         {
             DbSet.Remove(entity);

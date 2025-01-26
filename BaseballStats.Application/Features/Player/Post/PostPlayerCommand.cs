@@ -1,9 +1,9 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.Player.Create;
+namespace BaseballStats.Application.Features.Player.Post;
 
-public record CreatePlayerCommand : ICommand<RegularPlayerDto>
+public record PostPlayerCommand : ICommand<RegularPlayerDto>
 {
     public string Name { get; init; } = null!;
     public int Age { get; init; }

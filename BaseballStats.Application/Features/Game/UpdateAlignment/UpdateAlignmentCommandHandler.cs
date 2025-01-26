@@ -187,7 +187,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
 
     private Dictionary<long, HashSet<PlayerPositions>> GetAllowedPositions(long seriesId, long teamId)
     {
-        var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
+        var playerInPosition_table = unitOfWork.Repository<Domain.Entities.PlayerInPosition>().DbSet;
         var playerInSeries_table = unitOfWork.Repository<PlayerInSeries>().DbSet;
 
         var allowedPositionsForTeamPlayers = (
