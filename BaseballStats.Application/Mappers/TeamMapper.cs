@@ -17,9 +17,9 @@ public static class TeamMapper
         };
     }
 
-    public static TeamWithDtIdDto ToTeamWithDtIdDto(this Team team)
+    public static TeamAdminDto ToTeamAdminDto(this Team team)
     {
-        return new TeamWithDtIdDto()
+        return new TeamAdminDto()
         {
             Id = team.Id,
             Name = team.Name,

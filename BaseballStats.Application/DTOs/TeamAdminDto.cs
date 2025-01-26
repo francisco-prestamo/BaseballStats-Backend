@@ -1,6 +1,6 @@
 ﻿namespace BaseballStats.Application.DTOs;
 
-public record TeamWithDtIdDto : TeamDto
+public record TeamAdminDto : TeamDto
 {
     public long DtId { get; init; }
 }

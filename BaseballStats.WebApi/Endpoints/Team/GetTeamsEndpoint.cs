@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Team;
 
-public class GetTeamsEndpoint : EndpointWithoutRequest<List<TeamWithDtIdDto>>
+public class GetTeamsEndpoint : EndpointWithoutRequest<List<TeamAdminDto>>
 {
     public override void Configure()
     {
