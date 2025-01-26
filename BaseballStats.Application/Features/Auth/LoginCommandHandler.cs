@@ -28,7 +28,7 @@ public class LoginCommandHandler(IUnitOfWork unitOfWork, IConfiguration config) 
         });
 
         var userDto = user!.ToDto();
-        userDto.Token = token;
+        userDto.Token = "Bearer " + token;
 
         return userDto;
     }
