@@ -1,10 +1,10 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.Player.Create;
+using BaseballStats.Application.Features.Player.Post;
 
 namespace BaseballStats.WebApi.Endpoints.Player;
 
-public class CreatePlayerEndpoint : Endpoint<CreatePlayerCommand, RegularPlayerDto>
+public class PostPlayerEndpoint : Endpoint<PostPlayerCommand, RegularPlayerDto>
 {
     public override void Configure()
     {
@@ -14,7 +14,7 @@ public class CreatePlayerEndpoint : Endpoint<CreatePlayerCommand, RegularPlayerD
         Summary(x => x.Summary = "Crea un nuevo jugador");
     }
 
-    public override async Task HandleAsync(CreatePlayerCommand command, CancellationToken ct)
+    public override async Task HandleAsync(PostPlayerCommand command, CancellationToken ct)
     {
         var response = await command.ExecuteAsync(ct);
         await SendAsync(response, StatusCodes.Status201Created, ct);

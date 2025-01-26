@@ -3,11 +3,11 @@ using BaseballStats.Domain.Interfaces.DataAccess;
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.Player.Create;
+namespace BaseballStats.Application.Features.Player.Post;
 
-public class CreatePlayerCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<CreatePlayerCommand, RegularPlayerDto>
+public class PostPlayerCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PostPlayerCommand, RegularPlayerDto>
 {
-    public override async Task<RegularPlayerDto> ExecuteAsync(CreatePlayerCommand command, CancellationToken cancellationToken = default)
+    public override async Task<RegularPlayerDto> ExecuteAsync(PostPlayerCommand command, CancellationToken cancellationToken = default)
     {
         var playerRepository = unitOfWork.Repository<Domain.Entities.Player>();
 

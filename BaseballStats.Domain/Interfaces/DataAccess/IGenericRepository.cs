@@ -25,7 +25,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// </summary>
     /// <param name="id">The identifier of the entity.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    Task<TEntity?> GetByIdAsync(long id);
+    Task<TEntity?> GetByIdAsync(params object[] id);
 
     /// <summary>
     /// Gets all entities asynchronously.
@@ -52,7 +52,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// </summary>
     /// <param name="id">The identifier of the entity to delete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the deleted entity if found; otherwise, null.</returns>
-    Task<TEntity?> DeleteAsync(long id);
+    Task<TEntity?> DeleteAsync(params object[] keyValues);
 
     /// <summary>
     /// Deletes entities based on a predicate.

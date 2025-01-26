@@ -3,7 +3,7 @@ using BaseballStats.Application.Mappers;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.Player.GetAllPlayers;
+namespace BaseballStats.Application.Features.Player.GetAll;
 
 public class GetAllPlayersCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetAllPlayersCommand, List<RegularPlayerDto>>
 {

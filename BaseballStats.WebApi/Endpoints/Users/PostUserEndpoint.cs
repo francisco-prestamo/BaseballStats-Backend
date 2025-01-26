@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.User;
 
-public class CreateUserEndpoint : Endpoint<RegisterUserCommand, RegisteredUserDto>
+public class PostUserEndpoint : Endpoint<RegisterUserCommand, RegisteredUserDto>
 {
     public override void Configure()
     {
