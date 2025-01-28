@@ -9,7 +9,7 @@ public class GetAllDirectionStaffEndpoint : EndpointWithoutRequest<List<Directio
     public override void Configure()
     {
         Get("DirectionMembers");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Get all Direction Staff Members");
     }
 

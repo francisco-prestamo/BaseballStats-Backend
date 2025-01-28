@@ -9,7 +9,7 @@ public class PutDirectionStaffEndpoint : Endpoint<PutDirectionStaffCommand, Dire
     public override void Configure()
     {
         Put("DirectionMembers/{Id}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Update a Direction Staff");
     }
 
