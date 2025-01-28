@@ -9,7 +9,7 @@ public class GetTeamEndpoint : Endpoint<GetTeamCommand, TeamDto>
     public override void Configure()
     {
         Get("teams/{teamId}");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Gets a team by Id");
     }
 

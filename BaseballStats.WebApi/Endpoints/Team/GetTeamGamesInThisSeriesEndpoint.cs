@@ -9,7 +9,7 @@ public class GetTeamGamesInThisSeriesEndpoint : Endpoint<GetTeamGamesInThisSerie
     public override void Configure()
     {
         Get("teams/{teamId}/serie/{seasonId}/{seriesId}/games");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene los juegos de un equipo en una serie");
     }
 
