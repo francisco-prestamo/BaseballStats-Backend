@@ -3,6 +3,8 @@ using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Enums;
 using BaseballStats.Application.ResultSets;
 using FastEndpoints;
+using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BaseballStats.Application.Services;
 
@@ -12,22 +14,22 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
     {
         var substitutions_table = unitOfWork.Repository<Substitution>().DbSet;
         var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
-        
+
         var alignment = (
             from apig in alignedPlayerInGame_table
             where apig.GameId == gameId && apig.TeamId == teamId
-            select new 
+            select new
             {
                 apig.PlayerId,
                 apig.Position
             }).ToList().Select(x => (x.PlayerId, x.Position));
 
 
-        var substitutions = 
+        var substitutions =
             from s in substitutions_table
             where s.GameId == gameId && s.TeamId == teamId
             select s;
-        
+
         return await Task.FromResult(GetSubstitutionWithPositions(alignment, substitutions));
     }
 
@@ -72,7 +74,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
                     Position = ia.Position
                 }).ToList().Select(x => (x.PlayerId, x.Position));
 
-            var substitutions = 
+            var substitutions =
                 from s in allTeamSubstitutionsInSeries
                 where s.GameId == gameId
                 select s;
@@ -91,7 +93,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         foreach (var player in initialAlignment)
             positions.Add(player.PlayerId, player.Position);
 
-        var sortedSubstitutions = 
+        var sortedSubstitutions =
             from s in substitutions
             orderby s.Time ascending
             select s;
@@ -101,21 +103,210 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         {
             var playerOutId = substitution.PlayerOutId;
             var oldPosition = positions[substitution.PlayerOutId];
-            
+
             positions.Add(substitution.PlayerInId, oldPosition);
 
             var playerInId = substitution.PlayerInId;
 
-            ret.Add(new SubstitutionWithPosition(){
-                    PlayerInId = playerInId,
-                    PlayerOutId = playerOutId,
-                    Position = oldPosition,
-                    Time = substitution.Time
-                }
+            ret.Add(new SubstitutionWithPosition()
+            {
+                PlayerInId = playerInId,
+                PlayerOutId = playerOutId,
+                Position = oldPosition,
+                Time = substitution.Time
+            }
             );
         }
 
         return ret;
     }
 
+    public async Task<(bool status, string errorMessage)> CanAddSubstitution(long gameId, long teamId, Substitution newSubstitution)
+    {
+        var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
+        var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
+
+        var alignment = (
+        from apig in alignedPlayerInGame_table
+        where apig.GameId == gameId && apig.TeamId == teamId
+        select new
+        {
+            apig.PlayerId,
+            apig.Position
+        }).ToList().Select(x => (x.PlayerId, x.Position));
+
+        Dictionary<long, PlayerPositions> isInAlignment = new();
+        foreach (var apig in alignment)
+        {
+            if (apig.PlayerId == newSubstitution.PlayerInId)
+                return (false, "PlayerIn is in starting lineup");
+
+            isInAlignment.Add(apig.PlayerId, apig.Position);
+        }
+
+        var curSubstitutions = await GetSubstitutionsWithExtrasAsync(gameId, teamId);
+
+        Dictionary<long, bool> isOutOfGame = new();
+        var validSubstitution = (long playerIn, long playerOut) =>
+        {
+            if (isOutOfGame.ContainsKey(playerIn))
+                return (false, "PlayerIn has already played in the game");
+
+            if (!isInAlignment.ContainsKey(playerOut))
+                return (false, "PlayerOut is not in lineup");
+
+            var pipIn = (
+                from pip in playerInPosition_table
+                where pip.PlayerId == playerIn && pip.Position == isInAlignment[playerOut]
+                select pip
+            ).ToList();
+
+            if (pipIn.IsNullOrEmpty())
+                return (false, "PlayerIn can't play in that position");
+
+            if (isInAlignment.ContainsKey(playerIn))
+            {
+                var pipOut = (
+                    from pip in playerInPosition_table
+                    where pip.PlayerId == playerOut && pip.Position == isInAlignment[playerIn]
+                    select pip
+                ).ToList();
+
+                if (pipOut.IsNullOrEmpty())
+                    return (false, "PlayerOut can't play in that position");
+
+                (isInAlignment[playerIn], isInAlignment[playerOut]) = (isInAlignment[playerOut], isInAlignment[playerIn]);
+            }
+            else
+            {
+                isInAlignment.Add(playerIn, isInAlignment[playerOut]);
+                isInAlignment.Remove(playerOut);
+                isOutOfGame.Add(playerOut, true);
+            }
+
+            return (true, "OK");
+        };
+
+        bool flag = false;
+        foreach (var substitution in curSubstitutions)
+        {
+            if (substitution.Time > newSubstitution.Time)
+            {
+                if (!flag)
+                {
+                    var state = validSubstitution(newSubstitution.PlayerInId, newSubstitution.PlayerOutId);
+                    if (!state.Item1) return state;
+                    flag = true;
+                }
+
+                var newState = validSubstitution(substitution.PlayerInId, substitution.PlayerOutId);
+                if (!newState.Item1)
+                    return (newState.Item1, "Substitution affects future substitutions " + newState.Item2);
+            }
+            else
+            {
+                if (isInAlignment.ContainsKey(substitution.PlayerInId))
+                {
+                    (isInAlignment[substitution.PlayerInId], isInAlignment[substitution.PlayerOutId]) = (isInAlignment[substitution.PlayerOutId], isInAlignment[substitution.PlayerInId]);
+                }
+                else
+                {
+                    isInAlignment.Add(substitution.PlayerInId, isInAlignment[substitution.PlayerOutId]);
+                    isInAlignment.Remove(substitution.PlayerOutId);
+                    isOutOfGame.Add(substitution.PlayerOutId, true);
+                }
+            }
+        }
+
+        if (!flag)
+        {
+            var state = validSubstitution(newSubstitution.PlayerInId, newSubstitution.PlayerOutId);
+            if (!state.Item1) return state;
+            flag = true;
+        }
+
+        return (true, "OK");
+    }
+
+    public async Task<(bool status, string errorMessage)> CanDeleteSubstitution(long gameId, long teamId, Substitution oldSubstitution)
+    {
+        var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
+        var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
+
+        var alignment = (
+        from apig in alignedPlayerInGame_table
+        where apig.GameId == gameId && apig.TeamId == teamId
+        select new
+        {
+            apig.PlayerId,
+            apig.Position
+        }).ToList().Select(x => (x.PlayerId, x.Position));
+
+        Dictionary<long, PlayerPositions> isInAlignment = new();
+        foreach (var apig in alignment)
+        {
+            isInAlignment.Add(apig.PlayerId, apig.Position);
+        }
+
+        var curSubstitutions = await GetSubstitutionsWithExtrasAsync(gameId, teamId);
+
+        Dictionary<long, bool> isOutOfGame = new();
+        var validSubstitution = (long playerIn, long playerOut) =>
+        {
+            if (isOutOfGame.ContainsKey(playerIn))
+                return (false, "PlayerIn has already played in the game");
+
+            if (!isInAlignment.ContainsKey(playerOut))
+                return (false, "PlayerOut is not in lineup");
+
+            var pipIn = (
+                from pip in playerInPosition_table
+                where pip.PlayerId == playerIn && pip.Position == isInAlignment[playerOut]
+                select pip
+            ).ToList();
+
+            if (pipIn.IsNullOrEmpty())
+                return (false, "PlayerIn can't play in that position");
+
+            if (isInAlignment.ContainsKey(playerIn))
+            {
+                var pipOut = (
+                    from pip in playerInPosition_table
+                    where pip.PlayerId == playerOut && pip.Position == isInAlignment[playerIn]
+                    select pip
+                ).ToList();
+
+                if (pipOut.IsNullOrEmpty())
+                    return (false, "PlayerOut can't play in that position");
+
+                (isInAlignment[playerIn], isInAlignment[playerOut]) = (isInAlignment[playerOut], isInAlignment[playerIn]);
+            }
+            else
+            {
+                isInAlignment.Add(playerIn, isInAlignment[playerOut]);
+                isInAlignment.Remove(playerOut);
+                isOutOfGame.Add(playerOut, true);
+            }
+
+            return (true, "OK");
+        };
+
+        bool found = false;
+        foreach (var substitution in curSubstitutions)
+        {
+            if ((substitution.PlayerInId, substitution.PlayerOutId, substitution.Time) == (oldSubstitution.PlayerInId, oldSubstitution.PlayerOutId, oldSubstitution.Time))
+            {
+                found = true;
+                continue;
+            }
+
+            var state = validSubstitution(substitution.PlayerInId, substitution.PlayerOutId);
+            if (!state.Item1) return (state.Item1, "Can't be deleted " + state.Item2);
+        }
+
+        if (!found)
+            return (false, "Substitution not found");
+
+        return (true, "OK");
+    }
 }
