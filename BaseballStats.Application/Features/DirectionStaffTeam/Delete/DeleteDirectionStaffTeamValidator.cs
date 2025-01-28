@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace BaseballStats.Application.Features.DirectionStaffTeam.Delete;
+namespace BaseballStats.Application.Features.DirectionStaffTeamNamespace.Delete;
 
 public class DeleteDirectionStaffTeamValidator : Validator<DeleteDirectionStaffTeamCommand>
 {
