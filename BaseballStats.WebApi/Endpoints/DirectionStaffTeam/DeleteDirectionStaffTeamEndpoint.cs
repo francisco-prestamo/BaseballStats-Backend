@@ -9,7 +9,7 @@ public class DeleteDirectionStaffTeamEndpoint : Endpoint<DeleteDirectionStaffTea
     public override void Configure()
     {
         Delete("direct/{TeamId}/{DirectionMemberId}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Delete a DirectionStaff-Team relation");
     }
 
