@@ -9,7 +9,7 @@ public class GetTeamsFromSeriesEndpoint : Endpoint<GetTeamsFromSeriesCommand, Li
     public override void Configure()
     {
         Get("series/{SeasonId}/{SeriesId}/teams");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene todos los equipos con al menos un jugador en una serie");
     }
 

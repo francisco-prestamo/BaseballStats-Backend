@@ -9,7 +9,7 @@ public class DeleteSeriesEndpoint : Endpoint<DeleteSeriesCommand, SeriesDto>
     public override void Configure()
     {
         Delete("series/{SeasonId}/{Id}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Delete a series");
     }
 
