@@ -9,7 +9,7 @@ public class GetPlayerEndpoint : Endpoint<GetPlayerCommand, RegularPlayerDto>
     public override void Configure()
     {
         Get("players/{id}");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene un jugador por su Id");
     }
 
