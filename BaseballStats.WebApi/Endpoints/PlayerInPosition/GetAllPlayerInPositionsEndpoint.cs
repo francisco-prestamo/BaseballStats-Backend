@@ -9,7 +9,7 @@ public class GetAllPlayerInPositionsEndpoint : EndpointWithoutRequest<List<Playe
     public override void Configure()
     {
         Get("/playerInPositions");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Gets all player available positions");
     }
 

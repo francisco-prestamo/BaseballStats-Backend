@@ -10,7 +10,7 @@ public class GetPlayerInSeriesEndpoint : Endpoint<GetPlayerInSeriesCommand, Play
     public override void Configure()
     {
         Get("/playerInSeries/{PlayerId}/{SeasonId}/{SerieId}");
-        Roles("Admin");
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Gets a player's team assignment for a series");
     }
 
