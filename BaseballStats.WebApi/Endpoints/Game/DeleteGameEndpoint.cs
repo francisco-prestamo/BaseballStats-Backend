@@ -9,7 +9,7 @@ public class DeleteGameEndpoint : Endpoint<DeleteGameCommand, GameDto>
     public override void Configure()
     {
         Delete("/games/{GameId}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Delete a game");
     }
 

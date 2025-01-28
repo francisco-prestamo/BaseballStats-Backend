@@ -9,7 +9,7 @@ public class GetSubstitutionsEndpoint : Endpoint<GetSubstitutionsCommand, GameSu
     public override void Configure()
     {
         Get("games/{GameId}/substitutions");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene los cambios en las alineaciones de los equipos en el juego GameId");
     }
 

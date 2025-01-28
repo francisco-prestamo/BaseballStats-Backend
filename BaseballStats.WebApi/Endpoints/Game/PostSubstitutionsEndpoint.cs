@@ -9,7 +9,7 @@ public class PostSubstitutionEndpoint : Endpoint<PostSubstitutionCommand, Single
     public override void Configure()
     {
         Post("/substitutions");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Add a new substitution in the game");
     }
 

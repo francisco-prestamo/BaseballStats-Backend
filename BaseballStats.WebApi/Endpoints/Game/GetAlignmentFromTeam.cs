@@ -9,7 +9,7 @@ public class GetAlignmentFromTeamEndpoint : Endpoint<GetAlignmentFromTeamCommand
     public override void Configure()
     {
         Get("games/{GameId}/alignments/{TeamId}");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene la alineación de un equipo dado en un juego dado");
     }
 

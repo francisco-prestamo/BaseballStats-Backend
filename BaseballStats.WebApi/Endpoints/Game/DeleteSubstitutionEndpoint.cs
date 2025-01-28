@@ -9,7 +9,7 @@ public class DeleteSubstitutionEndpoint : Endpoint<DeleteSubstitutionCommand, Si
     public override void Configure()
     {
         Delete("/substitutions/{GameId}/{TeamId}/{PlayerInId}/{PlayerOutId}/{Time}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Delete a new substitution in the game");
     }
 

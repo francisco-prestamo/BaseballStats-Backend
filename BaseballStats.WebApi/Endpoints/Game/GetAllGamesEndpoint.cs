@@ -9,7 +9,7 @@ public class GetAllGamesEndpoint : EndpointWithoutRequest<List<GameDto>>
     public override void Configure()
     {
         Get("/games");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Get all games");
     }
 

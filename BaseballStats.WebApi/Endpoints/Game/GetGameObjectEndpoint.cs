@@ -9,7 +9,7 @@ public class GetGameObjectEndpoint : Endpoint<GetGameObjectCommand, GameWithTeam
     public override void Configure()
     {
         Get("games/{GameId}");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene el juego cuyo id es gameId");
     }
 
