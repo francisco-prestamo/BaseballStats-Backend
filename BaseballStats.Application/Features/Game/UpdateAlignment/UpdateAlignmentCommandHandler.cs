@@ -87,7 +87,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
 
     private bool ValidatePlayersAreInCorrectTeam(UpdateAlignmentCommand command)
     {
-        var playerInSeries_table = unitOfWork.Repository<PlayerInSeries>().DbSet;
+        var playerInSeries_table = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
 
         var playerIds = 
             from pip in command.Alignment
@@ -188,7 +188,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
     private Dictionary<long, HashSet<PlayerPositions>> GetAllowedPositions(long seriesId, long teamId)
     {
         var playerInPosition_table = unitOfWork.Repository<Domain.Entities.PlayerInPosition>().DbSet;
-        var playerInSeries_table = unitOfWork.Repository<PlayerInSeries>().DbSet;
+        var playerInSeries_table = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
 
         var allowedPositionsForTeamPlayers = (
             from pis in playerInSeries_table 

@@ -1,6 +1,7 @@
 ﻿using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Features.Game.GetGamesFromSeries;
 using BaseballStats.Application.Services;
+using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Infrastructure.Data.DataAccess;
@@ -23,6 +24,7 @@ public static class RegisterServices
         services.AddScoped<TeamWithExtrasService>();
         services.AddScoped<AlignmentService>();
         services.AddScoped<SubstitutionService>();
+        services.AddScoped<ValidatePlayerInSeriesChangeService>();
         return services;
     }
 
