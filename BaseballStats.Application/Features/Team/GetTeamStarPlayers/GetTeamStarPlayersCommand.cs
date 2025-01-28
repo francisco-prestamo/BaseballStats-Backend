@@ -1,7 +1,7 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.TeamNamespace.GetTeamStarPlayers;
+namespace BaseballStats.Application.Features.Team.GetTeamStarPlayers;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public record GetTeamStarPlayersCommand : ICommand<List<PlayerInPositionDto>>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using BaseballStats.Application.ResultSets;
 
-namespace BaseballStats.Application.Features.TeamNamespace.GetTeamStarPlayers;
+namespace BaseballStats.Application.Features.Team.GetTeamStarPlayers;
 
 public class GetTeamStarPlayersCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<GetTeamStarPlayersCommand, List<PlayerInPositionDto>>
 {

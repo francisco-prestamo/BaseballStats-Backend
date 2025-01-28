@@ -1,6 +1,6 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.TeamNamespace.GetTeam;
+using BaseballStats.Application.Features.Team.Get;
 
 namespace BaseballStats.WebApi.Endpoints.Team;
 
@@ -10,7 +10,7 @@ public class GetTeamEndpoint : Endpoint<GetTeamCommand, TeamDto>
     {
         Get("teams/{teamId}");
         AllowAnonymous();
-        Summary(x => x.Summary = "Obtiene la información de un equipo que participa en una serie");
+        Summary(x => x.Summary = "Gets a team by Id");
     }
 
     public override async Task HandleAsync(GetTeamCommand command, CancellationToken ct)

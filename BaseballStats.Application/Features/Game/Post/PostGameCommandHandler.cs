@@ -43,7 +43,7 @@ public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pos
 
     private async Task DatabaseValidations(PostGameCommand command)
     {
-        var teamRepository = unitOfWork.Repository<Team>();
+        var teamRepository = unitOfWork.Repository<Domain.Entities.Team>();
         var seriesRepository = unitOfWork.Repository<Domain.Entities.Series>();
         var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
 

@@ -15,6 +15,7 @@ public static class TeamMapper
             Initials = team.Initials,
             Color = team.Color,
             RepresentedEntity = team.RepresentedEntity,
+            DtId = team.TechnicalDirectorId
         };
     }
 }

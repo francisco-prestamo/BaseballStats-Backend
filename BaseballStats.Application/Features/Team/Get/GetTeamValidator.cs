@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace BaseballStats.Application.Features.TeamNamespace.GetTeam;
+namespace BaseballStats.Application.Features.Team.Get;
 
 public class GetTeamValidator : Validator<GetTeamCommand>
 {

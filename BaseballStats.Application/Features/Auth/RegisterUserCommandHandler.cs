@@ -19,15 +19,15 @@ public class RegisterUserCommandHandler(IUnitOfWork unitOfWork) : CommandHandler
         RegisteredUser user;
         if (command.UserType.ToUserType() == UserTypes.TechnicalDirector)
         {
-            user = new TechnicalDirector
+            user = new Domain.Entities.Identity.TechnicalDirector
             {
                 Username = command.Username,
                 Password = command.Password,
             };
 
             user = await userRepository.AddAsync(user);
-            var technicalDirectorRepository = unitOfWork.Repository<TechnicalDirector>();
-            await technicalDirectorRepository.AddAsync((TechnicalDirector) user);
+            var technicalDirectorRepository = unitOfWork.Repository<Domain.Entities.Identity.TechnicalDirector>();
+            await technicalDirectorRepository.AddAsync((Domain.Entities.Identity.TechnicalDirector) user);
             await unitOfWork.SaveChangesAsync(ct);
 
             return user.ToDto();

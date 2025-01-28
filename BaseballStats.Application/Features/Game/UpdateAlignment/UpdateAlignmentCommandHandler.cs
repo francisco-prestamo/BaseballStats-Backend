@@ -42,7 +42,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
     private async Task DatabaseValidations(UpdateAlignmentCommand command)
     {
         
-        var teamRepository = unitOfWork.Repository<Team>();
+        var teamRepository = unitOfWork.Repository<Domain.Entities.Team>();
         var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
         var game_table = unitOfWork.Repository<Domain.Entities.Game>().DbSet;
 

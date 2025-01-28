@@ -1,6 +1,6 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.TeamNamespace.GetTeamPlayersInASerie;
+using BaseballStats.Application.Features.Team.GetTeamPlayersInASerie;
 
 namespace BaseballStats.WebApi.Endpoints.Team;
 
