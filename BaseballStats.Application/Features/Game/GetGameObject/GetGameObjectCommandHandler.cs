@@ -18,11 +18,12 @@ public class GetGameObjectCommandHandler(IUnitOfWork unitOfWork) : CommandHandle
         var teamRepository = unitOfWork.Repository<Domain.Entities.Team>();
 
         var game = (await gameRepository.GetByIdAsync(gameId))!;
+        var series = (await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(game.SeriesId))!;
         // assuming the database is consistent
         var team1 = teamRepository.Where(x => x.Id == game.Team1Id).Select(x => x.ToDto()).FirstOrDefault()!;
         var team2 = teamRepository.Where(x => x.Id == game.Team2Id).Select(x => x.ToDto()).FirstOrDefault()!;
 
-        return game.ToDto(team1, team2);
+        return game.ToDto(team1, team2, series.SeasonId);
     }
 
     private async Task DatabaseValidations(GetGameObjectCommand command)

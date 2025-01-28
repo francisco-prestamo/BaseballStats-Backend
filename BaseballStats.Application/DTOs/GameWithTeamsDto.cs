@@ -9,4 +9,6 @@ public record GameWithTeamsDto
     public bool WinTeam { get; init; }
     public int Team1Runs { get; init; }
     public int Team2Runs { get; init; }
+    public long SeriesId { get; init; }
+    public long SeasonId { get; init; }
 }

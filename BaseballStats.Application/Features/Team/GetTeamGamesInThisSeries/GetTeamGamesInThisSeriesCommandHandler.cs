@@ -1,8 +1,10 @@
 using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Mappers;
+using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BaseballStats.Application.Features.Team.GetTeamGamesInThisSeries;
@@ -32,12 +34,18 @@ public class GetTeamGamesInThisSeriesCommandHandler(IUnitOfWork unitOfWork) : Co
            .ToList().ToDictionary(x => x.Id);
 
         // games for the series
-        var games = gameRepository.Where(x => x.SeriesId == seriesId && (x.Team1Id == teamId || x.Team2Id == teamId));
+        var games = (
+            from g in unitOfWork.Repository<Domain.Entities.Game>().DbSet
+            join s in unitOfWork.Repository<Domain.Entities.Series>().DbSet on g.SeriesId equals s.Id
+            where g.SeriesId == seriesId && (g.Team1Id == teamId || g.Team2Id == teamId)
+            select new {game = g, s.SeasonId}
+        ).AsNoTracking();
 
         var gamesDto = games.Select(
-            x => x.ToDto(
-                relevantTeams[x.Team1Id],
-                relevantTeams[x.Team2Id]
+            x => x.game.ToDto(
+                relevantTeams[x.game.Team1Id],
+                relevantTeams[x.game.Team2Id],
+                x.SeasonId
             )
         );
 
