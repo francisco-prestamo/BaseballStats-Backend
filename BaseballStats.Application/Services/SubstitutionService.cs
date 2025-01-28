@@ -123,6 +123,33 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
 
     public async Task<(bool status, string errorMessage)> CanAddSubstitution(long gameId, long teamId, Substitution newSubstitution)
     {
+        var playerInSeries_table = unitOfWork.Repository<PlayerInSeries>().DbSet;
+        var game_table = unitOfWork.Repository<Game>().DbSet;
+
+        var gis = (
+            from g in game_table
+            where g.Id == gameId
+            select g
+        ).First();
+
+        var playerInst = (
+            from pis in playerInSeries_table
+            where pis.PlayerId == newSubstitution.PlayerInId && pis.SeriesId == gis.SeriesId
+            select pis
+        ).First();
+
+        if (playerInst.TeamId != teamId)
+            return (false, "PlayerIn don't play in Team");
+        
+        var playerOutst = (
+            from pis in playerInSeries_table
+            where pis.PlayerId == newSubstitution.PlayerOutId && pis.SeriesId == gis.SeriesId
+            select pis
+        ).First();
+
+        if (playerOutst.TeamId != teamId)
+            return (false, "PlayerOut don't play in Team");
+
         var alignedPlayerInGame_table = unitOfWork.Repository<AlignedPlayerInGame>().DbSet;
         var playerInPosition_table = unitOfWork.Repository<PlayerInPosition>().DbSet;
 
