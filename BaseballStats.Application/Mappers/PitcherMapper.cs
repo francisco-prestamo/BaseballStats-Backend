@@ -11,10 +11,10 @@ public static class PitcherMapper
         return new PitcherDto()
         {
             Id = pitcher.Id,
-            Name = pitcher.Name,
-            Age = pitcher.Age,
-            YearsOfExperience = pitcher.YearsOfExperience,
-            BattingAverage = pitcher.BattingAverage,
+            Name = pitcher.Player.Name,
+            Age = pitcher.Player.Age,
+            YearsOfExperience = pitcher.Player.YearsOfExperience,
+            BattingAverage = pitcher.Player.BattingAverage,
             GamesWonNumber = pitcher.GamesWonNumber,
             GamesLostNumber = pitcher.GamesLostNumber,
             RightHanded = pitcher.RightHanded,
