@@ -10,7 +10,6 @@ public class PostUserEndpoint : Endpoint<RegisterUserCommand, RegisteredUserDto>
     {
         Post("/users");
         Roles("Admin");
-        // AllowAnonymous();
         Summary(x => x.Summary = "Crea un nuevo usuario");
     }
 
