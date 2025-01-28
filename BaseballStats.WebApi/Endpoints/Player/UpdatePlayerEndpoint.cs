@@ -9,8 +9,7 @@ public class UpdatePlayerEndpoint : Endpoint<UpdatePlayerCommand, RegularPlayerD
     public override void Configure()
     {
         Put("players/{Id}");
-        // Roles("Admin");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Actualiza un jugador");
     }
 

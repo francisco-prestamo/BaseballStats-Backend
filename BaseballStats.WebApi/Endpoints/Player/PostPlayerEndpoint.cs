@@ -9,8 +9,7 @@ public class PostPlayerEndpoint : Endpoint<PostPlayerCommand, RegularPlayerDto>
     public override void Configure()
     {
         Post("players");
-        // Roles("Admin");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Crea un nuevo jugador");
     }
 

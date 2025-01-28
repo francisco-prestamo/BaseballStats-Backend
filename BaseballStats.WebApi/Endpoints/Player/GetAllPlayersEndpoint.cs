@@ -9,7 +9,7 @@ public class GetAllPlayersEndpoint : EndpointWithoutRequest<List<RegularPlayerDt
     public override void Configure()
     {
         Get("players");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene todos los jugadores");
     }
 

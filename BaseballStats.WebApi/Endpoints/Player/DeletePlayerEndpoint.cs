@@ -8,8 +8,7 @@ public class DeletePlayerEndpoint : Endpoint<DeletePlayerCommand, EmptyResponse>
     public override void Configure()
     {
         Delete("players/{PlayerId}");
-        // Roles("Admin");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Elimina un jugador");
     }
 
