@@ -7,5 +7,6 @@ namespace BaseballStats.Application.DTOs
         public string Initials { get; init; } = null!;
         public string Color { get; init; } = null!;
         public string RepresentedEntity { get; init; } = null!;
+        public long DtId { get; init; }
     }
 }
