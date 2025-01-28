@@ -9,7 +9,7 @@ public class GetSeriesEndpoint : EndpointWithoutRequest<List<SeriesDto>>
     public override void Configure()
     {
         Get("series/");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Obtiene todas las series");
     }
 

@@ -9,7 +9,7 @@ public class PostSeriesEndpoint : Endpoint<PostSeriesCommand, SeriesDto>
     public override void Configure()
     {
         Post("series/{SeasonId}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Create a new series");
     }
 
