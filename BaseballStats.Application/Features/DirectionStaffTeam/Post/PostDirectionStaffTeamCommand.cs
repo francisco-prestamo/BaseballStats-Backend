@@ -1,7 +1,7 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.DirectionStaffTeam.Post;
+namespace BaseballStats.Application.Features.DirectionStaffTeamNamespace.Post;
 
 public record PostDirectionStaffTeamCommand : ICommand<DirectionStaffTeamDto>
 {

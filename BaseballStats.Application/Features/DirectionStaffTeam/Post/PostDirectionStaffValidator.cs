@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace BaseballStats.Application.Features.DirectionStaffTeam.Post;
+namespace BaseballStats.Application.Features.DirectionStaffTeamNamespace.Post;
 
 public class PostDirectionStaffTeamValidator : Validator<PostDirectionStaffTeamCommand>
 {

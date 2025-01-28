@@ -3,8 +3,9 @@ using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
-namespace BaseballStats.Application.Features.DirectionStaffTeam.Post;
+namespace BaseballStats.Application.Features.DirectionStaffTeamNamespace.Post;
 
 public class PostDirectionStaffTeamCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PostDirectionStaffTeamCommand, DirectionStaffTeamDto>
 {
@@ -12,17 +13,31 @@ public class PostDirectionStaffTeamCommandHandler(IUnitOfWork unitOfWork) : Comm
     {
         await DatabaseValidations(command);
 
-        var directionStaffRepo = unitOfWork.Repository<Domain.Entities.DirectionStaff>();
-        var directionStaff = await directionStaffRepo.GetByIdAsync(command.DirectionMemberId);
-        
-        var teamRepo = unitOfWork.Repository<Domain.Entities.Team>();
-        var team = await teamRepo.GetByIdAsync(command.TeamId);
-        
-        team!.DirectionStaffs.Add(directionStaff!);
-        directionStaff!.TeamsLead.Add(team!);
+        var directionStaffTeam = unitOfWork.Repository<Domain.Entities.DirectionStaffTeam>().DbSet;
+        var directionStaff = unitOfWork.Repository<Domain.Entities.DirectionStaff>().DbSet;
+        var team = unitOfWork.Repository<Domain.Entities.Team>().DbSet;
 
-        await directionStaffRepo.UpdateAsync(directionStaff);
-        await teamRepo.UpdateAsync(team);
+        var directionStaffInfo = (
+            from ds in directionStaff
+            where ds.Id == command.DirectionMemberId
+            select ds
+        ).First();
+
+        var teamInfo = (
+            from t in team
+            where t.Id == command.TeamId
+            select t
+        ).First();
+
+        var entity = new DirectionStaffTeam()
+        {
+            DirectionStaffId = directionStaffInfo.Id,
+            DirectionStaff = directionStaffInfo,
+            TeamId = teamInfo.Id,
+            Team = teamInfo
+        };
+
+        var createdRelation = await directionStaffTeam.AddAsync(entity);
 
         await unitOfWork.SaveChangesAsync(ct);
         return new DirectionStaffTeamDto { DirectionMemberId = command.DirectionMemberId, TeamId = command.TeamId };
@@ -30,20 +45,17 @@ public class PostDirectionStaffTeamCommandHandler(IUnitOfWork unitOfWork) : Comm
 
     private async Task DatabaseValidations(PostDirectionStaffTeamCommand command)
     {
-        var team = await unitOfWork.Repository<Team>().GetByIdAsync(command.TeamId);
+        var directionStaffTeam = unitOfWork.Repository<Domain.Entities.DirectionStaffTeam>().DbSet;
 
-        if (team is null)
-            ThrowError("TeamId does not exist", StatusCodes.Status404NotFound);
+        var dst = (
+            from st in directionStaffTeam
+            where st.DirectionStaffId == command.DirectionMemberId && st.TeamId == command.TeamId
+            select st
+        ).ToList();
 
-        var directionStaff = await unitOfWork.Repository<Domain.Entities.DirectionStaff>().GetByIdAsync(command.DirectionMemberId);
+        if (!dst.IsNullOrEmpty())
+            ThrowError("Relation between TeamId and DirectionMemberId already exists", StatusCodes.Status400BadRequest);
 
-        if (directionStaff is null)
-            ThrowError("DirectionStaff does not exist", StatusCodes.Status404NotFound);
-
-        foreach (var member in team.DirectionStaffs)
-        {
-            if (member.Id == command.DirectionMemberId)
-                ThrowError("Relation between TeamId and DirectionMemberId already exists", StatusCodes.Status400BadRequest);
-        }
+        await Task.CompletedTask;
     }
 }
