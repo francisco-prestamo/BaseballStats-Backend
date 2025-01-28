@@ -37,10 +37,13 @@ public class GetGamesFromSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandH
         // games for the series
         var games = gameRepository.Where(x => x.SeriesId == seriesId);
 
+        var series = (await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(seriesId))!;
+
         var gamesDto = games.Select(
             x => x.ToDto(
                 relevantTeams[x.Team1Id], 
-                relevantTeams[x.Team2Id]
+                relevantTeams[x.Team2Id],
+                series.SeasonId
             )
         );
 

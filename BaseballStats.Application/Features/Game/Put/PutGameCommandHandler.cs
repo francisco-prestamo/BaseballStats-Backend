@@ -16,6 +16,7 @@ public class PutGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PutG
         var repository = unitOfWork.Repository<Domain.Entities.Game>();
 
         var game = await repository.GetByIdAsync(command.Id);
+        var series = (await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.SeriesId))!;
 
         game!.Team1Id = command.Team1Id;
         game.Team2Id = command.Team2Id;
@@ -27,7 +28,7 @@ public class PutGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PutG
 
         await unitOfWork.SaveChangesAsync(ct);
 
-        return game.ToGameDto();
+        return game.ToGameDto(series.SeasonId);
     }
 
     private async Task DatabaseValidations(PutGameCommand command)

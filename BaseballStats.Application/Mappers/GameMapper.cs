@@ -6,7 +6,7 @@ namespace BaseballStats.Application.Mappers;
 
 public static class GameMapper
 {
-    public static GameWithTeamsDto ToDto(this Game game, TeamDto team1, TeamDto team2)
+    public static GameWithTeamsDto ToDto(this Game game, TeamDto team1, TeamDto team2, long seasonId)
     {
         return new GameWithTeamsDto()
         {
@@ -17,10 +17,12 @@ public static class GameMapper
             WinTeam = game.Winner1,
             Team1Runs = game.Runs1,
             Team2Runs = game.Runs2,
+            SeriesId = game.SeriesId,
+            SeasonId = seasonId
         };
     }
     
-    public static GameDto ToGameDto(this Game game)
+    public static GameDto ToGameDto(this Game game, long seasonId)
     {
         return new GameDto()
         {
@@ -31,7 +33,8 @@ public static class GameMapper
             WinTeam = game.Winner1,
             Team1Runs = game.Runs1,
             Team2Runs = game.Runs2,
-            SeriesId = game.SeriesId
+            SeriesId = game.SeriesId,
+            SeasonId = seasonId
         };
     }
 }

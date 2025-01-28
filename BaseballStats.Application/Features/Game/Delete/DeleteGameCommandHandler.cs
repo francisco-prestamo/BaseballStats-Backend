@@ -13,10 +13,15 @@ public class DeleteGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<D
         await DatabaseValidation(command);
         
         var game = await unitOfWork.Repository<Domain.Entities.Game>().DeleteAsync(command.GameId);
+        var seasonId = (
+            from series in unitOfWork.Repository<Domain.Entities.Series>().DbSet
+            where series.Id == game!.SeriesId
+            select series.SeasonId
+        ).Single();
         
         await unitOfWork.SaveChangesAsync(ct);
 
-        return game!.ToGameDto();
+        return game!.ToGameDto(seasonId);
     }
 
     private async Task DatabaseValidation(DeleteGameCommand command)

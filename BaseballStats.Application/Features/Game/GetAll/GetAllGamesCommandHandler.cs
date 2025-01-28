@@ -9,9 +9,18 @@ public class GetAllGamesCommandHadler(IUnitOfWork unitOfWork) : CommandHandler<G
 {
     public override async Task<List<GameDto>> ExecuteAsync(GetAllGamesCommand command, CancellationToken ct = default)
     {
-        var games = (await unitOfWork.Repository<Domain.Entities.Game>().GetAllAsync()).ToList();
+        var game_table = unitOfWork.Repository<Domain.Entities.Game>().DbSet;
+        var series_table = unitOfWork.Repository<Domain.Entities.Series>().DbSet;
 
-        return games.Select(g => g.ToGameDto()).ToList();
+        var games = (
+            from game in game_table
+            join series in series_table on game.SeriesId equals series.Id
+            select game.ToGameDto(series.SeasonId)
+        ).ToList();
+
+        await Task.CompletedTask;
+
+        return games;
     } 
 
 }
