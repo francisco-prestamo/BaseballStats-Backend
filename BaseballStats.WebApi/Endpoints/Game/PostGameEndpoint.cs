@@ -9,7 +9,7 @@ public class PostGameEndpoint : Endpoint<PostGameCommand, GameDto>
     public override void Configure()
     {
         Post("games");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Add a game to a series");
     }
 

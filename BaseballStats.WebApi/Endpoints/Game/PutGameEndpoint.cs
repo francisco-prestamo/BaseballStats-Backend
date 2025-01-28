@@ -9,7 +9,7 @@ public class PutGameEndpoint : Endpoint<PutGameCommand, GameDto>
     public override void Configure()
     {
         Put("/games/{Id}");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Update a game");
     }
 

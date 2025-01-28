@@ -9,7 +9,7 @@ public class UpdateAlignemntEndpoint : Endpoint<UpdateAlignmentCommand, SingleAl
     public override void Configure()
     {
         Put("/games/{GameId}/alignments/{TeamId}");
-        AllowAnonymous();
+        Roles("TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Update a game alignment");
     }
 
