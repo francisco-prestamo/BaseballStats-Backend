@@ -9,7 +9,7 @@ public class PostSeasonEndpoint : EndpointWithoutRequest<SeasonDto>
     public override void Configure()
     {
         Post("seasons/");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Create a new season");
     }
 
