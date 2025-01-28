@@ -1,5 +1,5 @@
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.DirectionStaffTeam.Post;
+using BaseballStats.Application.Features.DirectionStaffTeamNamespace.Post;
 using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.DirectionStaffTeam;
