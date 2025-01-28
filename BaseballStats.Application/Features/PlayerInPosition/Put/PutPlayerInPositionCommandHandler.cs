@@ -60,7 +60,7 @@ public class PutPlayerInPositionCommandHandler(IUnitOfWork unitOfWork) : Command
         ).FirstOrDefault();
 
         if (previousAssignment == null)
-            ThrowError("Player is not assigned to this position", StatusCodes.Status400BadRequest);
+            ThrowError("Player is not assigned to provided position", StatusCodes.Status400BadRequest);
     }
 
 }
