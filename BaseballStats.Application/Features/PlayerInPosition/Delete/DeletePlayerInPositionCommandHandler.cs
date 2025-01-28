@@ -18,7 +18,13 @@ public class DeletePlayerInPositionCommandHandler(IUnitOfWork unitOfWork, Substi
         await DatabaseValidations(command);
 
         var playerInPositionRepository = unitOfWork.Repository<Domain.Entities.PlayerInPosition>();
-        var entity = await playerInPositionRepository.DeleteAsync(command.PlayerId, command.Position.GetPlayerPosition());
+        var entity = (await playerInPositionRepository.DeleteAsync(command.PlayerId, command.Position.GetPlayerPosition()))!;
+
+        if (entity.Position == Domain.Enums.PlayerPositions.Pitcher)
+        {
+            var pitcherRepository = unitOfWork.Repository<Domain.Entities.Pitcher>();
+            await pitcherRepository.DeleteAsync(command.PlayerId);
+        }
 
         await unitOfWork.SaveChangesAsync(ct);
 
