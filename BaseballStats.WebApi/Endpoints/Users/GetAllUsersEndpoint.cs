@@ -10,7 +10,6 @@ public class GetAllUsersEndpoint : EndpointWithoutRequest<List<RegisteredUserDto
     {
         Get("/users");
         Roles("Admin");
-        // AllowAnonymous();
         Summary(x => x.Summary = "Obtiene todos los usuarios");
     }
 

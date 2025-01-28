@@ -10,7 +10,6 @@ public class DeleteUserEndpoint : Endpoint<DeleteUserCommand, RegisteredUserDto>
     {
         Delete("users/{Id}");
         Roles("Admin");
-        // AllowAnonymous();
         Summary(x => x.Summary = "Elimina un usuario");
     }
 

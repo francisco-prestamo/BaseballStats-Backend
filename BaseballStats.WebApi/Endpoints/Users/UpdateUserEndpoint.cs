@@ -10,7 +10,6 @@ public class UpdateUserEndpoint : Endpoint<UpdateUserCommand, RegisteredUserDto>
     {
         Put("users/{Id}");
         Roles("Admin");
-        // AllowAnonymous();
         Summary(x => x.Summary = "Actualiza un usuario");
     }
 
