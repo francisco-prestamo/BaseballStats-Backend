@@ -9,7 +9,7 @@ public class PostDirectionStaffEndpoint : Endpoint<PostDirectionStaffCommand, Di
     public override void Configure()
     {
         Post("DirectionMembers");
-        AllowAnonymous();
+        Roles("Admin");
         Summary(x => x.Summary = "Create a Direction Staff");
     }
 
