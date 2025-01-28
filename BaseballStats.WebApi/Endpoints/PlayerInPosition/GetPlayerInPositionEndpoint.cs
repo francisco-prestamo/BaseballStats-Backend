@@ -10,7 +10,7 @@ public class GetPlayerInPositionEndpoint : Endpoint<GetPlayerInPositionCommand, 
     public override void Configure()
     {
         Get("/playerInPositions/{PlayerId}/{Position}");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Gets a player available position assignment");
     }
 

@@ -10,7 +10,7 @@ public class GetAllPlayerInSeriesEndpoint : EndpointWithoutRequest<List<PlayerIn
     public override void Configure()
     {
         Get("/playerInSeries");
-        AllowAnonymous();
+        Roles("Journalist", "TechnicalDirector", "Admin");
         Summary(x => x.Summary = "Gets all team assignments for each player in each series");
     }
 
