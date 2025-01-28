@@ -1,7 +1,7 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.DirectionStaffTeam.Delete;
+namespace BaseballStats.Application.Features.DirectionStaffTeamNamespace.Delete;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public record DeleteDirectionStaffTeamCommand : ICommand<DirectionStaffTeamDto>

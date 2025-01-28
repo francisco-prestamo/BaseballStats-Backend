@@ -1,6 +1,6 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.DirectionStaffTeam.Delete;
+using BaseballStats.Application.Features.DirectionStaffTeamNamespace.Delete;
 
 namespace BaseballStats.WebApi.Endpoints.DirectionStaffTeam;
 
