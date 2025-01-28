@@ -1,6 +1,6 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.DirectionStaffTeam.Get;
+using BaseballStats.Application.Features.DirectionStaffTeamNamespace.Get;
 
 namespace BaseballStats.WebApi.Endpoints.DirectionStaffTeam;
 
