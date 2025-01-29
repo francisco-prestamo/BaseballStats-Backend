@@ -4,7 +4,7 @@ using FastEndpoints;
 
 namespace BaseballStats.WebApi.Endpoints.Season;
 
-public class PostSeasonEndpoint : EndpointWithoutRequest<SeasonDto>
+public class PostSeasonEndpoint : Endpoint<PostSeasonCommand, SeasonDto>
 {
     public override void Configure()
     {
@@ -13,9 +13,9 @@ public class PostSeasonEndpoint : EndpointWithoutRequest<SeasonDto>
         Summary(x => x.Summary = "Create a new season");
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(PostSeasonCommand command, CancellationToken ct)
     {
-        var response = await new PostSeasonCommand().ExecuteAsync(ct);
-        await SendAsync(response, 200, ct);
+        var response = await command.ExecuteAsync(ct);
+        await SendAsync(response, StatusCodes.Status201Created, ct);
     }
 }
