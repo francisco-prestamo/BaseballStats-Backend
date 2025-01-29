@@ -15,7 +15,7 @@ public class PostSeriesValidator : Validator<PostSeriesCommand>
         
         RuleFor(x => x.EndDate).NotEmpty().WithMessage("End Date is required.");
         
-        RuleFor(x => x.SeasonId)
+        RuleFor(x => x.IdSeason)
             .NotEmpty().WithMessage("Season Id is required.")
             .GreaterThan(0).WithMessage("Season Id must be greater than 0.");
     }

@@ -8,7 +8,7 @@ public class PostSeriesEndpoint : Endpoint<PostSeriesCommand, SeriesDto>
 {
     public override void Configure()
     {
-        Post("series/{SeasonId}");
+        Post("series/");
         Roles("Admin");
         Summary(x => x.Summary = "Create a new series");
     }
