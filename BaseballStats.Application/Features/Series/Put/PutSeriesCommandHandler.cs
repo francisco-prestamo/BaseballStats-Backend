@@ -14,13 +14,14 @@ public class PutSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pu
 
         var seriesRepository = unitOfWork.Repository<Domain.Entities.Series>();
 
-        var series = await seriesRepository.GetByIdAsync(command.Id);
+        var series = await seriesRepository.GetByIdAsync(command.SerieId);
 
-        series!.Name = command.Name;
+        series!.Id = command.Id;
+        series.Name = command.Name;
         series.Type = command.Type;
         series.StartDate = command.StartDate;
         series.EndDate = command.EndDate;
-        series.SeasonId = command.SeasonId;
+        series.SeasonId = command.IdSeason;
 
         series = await seriesRepository.UpdateAsync(series);
 
@@ -31,17 +32,25 @@ public class PutSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pu
 
     private async Task DatabaseValidation(PutSeriesCommand command)
     {
-        var series = await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.Id);
+        var series = await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.SerieId);
 
         if (series == null)
             ThrowError("Series not found", StatusCodes.Status404NotFound);
-        
-        if(series.SeasonId != command.SeasonId)
+
+        if (series.SeasonId != command.SeasonId)
             ThrowError("Series not found in the season", StatusCodes.Status404NotFound);
 
         var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.SeasonId);
 
         if (season == null)
             ThrowError("Season not found", StatusCodes.Status400BadRequest);
+
+        if (command.Id != command.SerieId)
+        {
+            series = await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.Id);
+
+            if (series != null)
+                ThrowError("Series already exists", StatusCodes.Status400BadRequest);
+        }
     }
 }
