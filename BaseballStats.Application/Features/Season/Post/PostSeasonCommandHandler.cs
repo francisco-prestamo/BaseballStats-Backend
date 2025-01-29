@@ -11,8 +11,13 @@ public class PostSeasonCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<P
     {
         var seasonRepository = unitOfWork.Repository<Domain.Entities.Season>();
 
-        var season = await seasonRepository.AddAsync(new Domain.Entities.Season());
+        var validate = await seasonRepository.GetByIdAsync(command.Id);
         
+        if (validate is not null)
+            ThrowError("Season already exists");
+
+        var season = await seasonRepository.AddAsync(new Domain.Entities.Season() { Id = command.Id });
+
         await unitOfWork.SaveChangesAsync(ct);
 
         return season.ToDto();
