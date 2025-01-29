@@ -16,11 +16,12 @@ public class PostSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<P
 
         var series = new Domain.Entities.Series
         {
+            Id = command.Id,
             Name = command.Name,
             Type = command.Type,
-            StartDate = command.StartDate,
-            EndDate = command.EndDate,
-            SeasonId = command.SeasonId
+            StartDate = new DateOnly(command.StartDate.Year, command.StartDate.Month, command.StartDate.Day),
+            EndDate = new DateOnly(command.EndDate.Year, command.EndDate.Month, command.EndDate.Day),
+            SeasonId = command.IdSeason
         };
 
         series = await seriesRepository.AddAsync(series);
@@ -32,7 +33,11 @@ public class PostSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<P
 
     private async Task DatabaseValidation(PostSeriesCommand command)
     {
-        var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.SeasonId);
+        var series = await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.Id);
+        if (series != null)
+            ThrowError("Series Id already exists.", StatusCodes.Status400BadRequest);
+        
+        var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.IdSeason);
         if (season == null)
             ThrowError("Season Id not found.", StatusCodes.Status400BadRequest);
     }
