@@ -3,12 +3,8 @@ using FastEndpoints;
 
 namespace BaseballStats.Application.Features.Series.Put;
 
-public record PutSeriesCommand : ICommand<SeriesDto>
+public record PutSeriesCommand : SeriesDto, ICommand<SeriesDto>
 {
-    public long Id { get; init; }
-    public long SeasonId { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public string Type { get; init; } = string.Empty;
-    public DateOnly StartDate { get; init; }
-    public DateOnly EndDate { get; init; }
+   public long SeasonId { get; init; }
+   public long SerieId { get; init; }
 }
