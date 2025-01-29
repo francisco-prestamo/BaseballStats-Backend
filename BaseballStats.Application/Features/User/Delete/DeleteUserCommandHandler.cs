@@ -28,5 +28,18 @@ public class DeleteUserCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<D
 
         if (user is null)
             ThrowError("UserId not found", StatusCodes.Status404NotFound);
+    
+        if (user.Type == Domain.Enums.UserTypes.TechnicalDirector)
+        {
+            var team_table = unitOfWork.Repository<Domain.Entities.Team>().DbSet;
+            var directedTeam = (
+                from t in team_table
+                where t.TechnicalDirectorId == command.Id
+                select t
+            ).FirstOrDefault();
+
+            if (directedTeam != null)
+                ThrowError($"Cannot delete a Technical Director that is directing a team (e.g. directed team {directedTeam.Id})", StatusCodes.Status400BadRequest);
+        }
     }
 }
