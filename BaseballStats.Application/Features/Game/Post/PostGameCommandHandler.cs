@@ -62,7 +62,7 @@ public class PostGameCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Pos
         if (series is null)
             ThrowError("SeriesId does not exist", StatusCodes.Status400BadRequest);
         
-        var game = await gameRepository.FirstOrDefaultAsync(x => x.Team1Id == command.Team1Id && x.Team2Id == command.Team2Id && x.Date != command.Date);
+        var game = await gameRepository.FirstOrDefaultAsync(x => x.Team1Id == command.Team1Id && x.Team2Id == command.Team2Id && x.Date == command.Date);
         
         if(game is not null)
             ThrowError("There is already a game between those teams on that day", StatusCodes.Status400BadRequest);
