@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BaseballStats.Application.Features.Game.UpdateAlignment;
 
-public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<UpdateAlignmentCommand, SingleAlignmentDto>
+public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : CommandHandler<UpdateAlignmentCommand, SingleAlignmentDto>
 {
     public override async Task<SingleAlignmentDto> ExecuteAsync(UpdateAlignmentCommand command, CancellationToken ct = new CancellationToken())
     {
@@ -54,10 +54,11 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
         var team = await teamRepository.GetByIdAsync(command.TeamId);
 
         if (team is null)
-            ThrowError("TeamId does not exist", StatusCodes.Status400BadRequest);
+            ThrowError("Team not found", StatusCodes.Status400BadRequest);
 
-        
-        if (!ValidatePlayersAreInCorrectTeam(command))
+        await ValidateIdentity(team);
+
+        if (!PlayersAreInCorrectTeam(command, game.SeriesId))
         {
             ThrowError("Players must be assigned to provided team in the provided game's series", StatusCodes.Status400BadRequest);
         }
@@ -66,9 +67,8 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
             from a in command.Alignment
             select (a.Player.Id, a.Position.GetPlayerPosition())
         ).ToList();
+        
         var allowedPositions = GetAllowedPositions(game.SeriesId, command.TeamId);
-        System.Console.WriteLine($"AllowedPositions: {string.Join(", ", allowedPositions.Select(x => $"{x.Key}: {string.Join(", ", x.Value)}"))}");
-        System.Console.WriteLine();
         var substitutions = GetSubstitutions(command.GameId, command.TeamId);
         
         switch (ValidateSubstitutions(initialAlignment, substitutions, allowedPositions))
@@ -85,7 +85,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
         }
     }
 
-    private bool ValidatePlayersAreInCorrectTeam(UpdateAlignmentCommand command)
+    private bool PlayersAreInCorrectTeam(UpdateAlignmentCommand command, long seriesId)
     {
         var playerInSeries_table = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
 
@@ -97,7 +97,7 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
         var playersInCorrectTeam =
             from pis in playerInSeries_table
             join p in playerIds on pis.PlayerId equals p
-            where pis.TeamId == command.TeamId
+            where pis.TeamId == command.TeamId && pis.SeriesId == seriesId
             select pis.PlayerId;
 
         return !playerIds.Except(playersInCorrectTeam).Any();
@@ -113,6 +113,12 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
     /// <param name="availablePositions">The positions each player can play</param>
     private ValidateSubstitutionsErrorCode ValidateSubstitutions(List<(long PlayerId, PlayerPositions Position)> initialAlignment, List<Substitution> substitutions, Dictionary<long, HashSet<PlayerPositions>> availablePositions)
     {
+        System.Console.WriteLine("Allowed positions:");
+        foreach (var kvp in availablePositions)
+        {
+            System.Console.WriteLine($"{kvp.Key}: {string.Join(", ", kvp.Value)}");
+        }
+
         var playersInAllowedPosition = 
             from pip in initialAlignment
             join ap in availablePositions on pip.PlayerId equals ap.Key
@@ -212,5 +218,46 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork) : CommandHand
             where s.GameId == gameId && s.TeamId == teamId
             select s
         ).ToList();
+    }
+
+    private async Task ValidateIdentity(Domain.Entities.Team team)
+    {
+        var httpContext = httpContextAccessor.HttpContext;
+
+        if (httpContext is null)
+            ThrowError("Could not validate identity", StatusCodes.Status400BadRequest);
+
+        var userClaim = httpContext.User.FindFirst("UserId");
+
+        if (userClaim is null)
+            ThrowError("Could not validate identity", StatusCodes.Status400BadRequest);
+
+        long userId = 1;
+
+        try 
+        {
+            userId = long.Parse(userClaim.Value);
+        }
+        catch (Exception)
+        {
+            ThrowError("Could not validate identity", StatusCodes.Status400BadRequest);
+        }
+
+        var registeredUserRepository = unitOfWork.Repository<Domain.Entities.Identity.RegisteredUser>();
+
+        var user = await registeredUserRepository.GetByIdAsync(userId);
+
+        if (user is null)
+            ThrowError("Could not validate identity", StatusCodes.Status404NotFound);
+
+        if (user.Type == UserTypes.TechnicalDirector)
+        {
+            if (team.TechnicalDirectorId != userId)
+                ThrowError("Technical director does not direct the provided team", StatusCodes.Status400BadRequest);
+        }
+        else if (user.Type != UserTypes.Admin)
+        {
+            ThrowError("Could not validate identity", StatusCodes.Status404NotFound);
+        }
     }
 }
