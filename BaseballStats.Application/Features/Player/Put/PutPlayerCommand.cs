@@ -3,7 +3,7 @@ using FastEndpoints;
 
 namespace BaseballStats.Application.Features.Player.Put;
 
-public record UpdatePlayerCommand : ICommand<RegularPlayerDto>
+public record PutPlayerCommand : ICommand<RegularPlayerDto>
 {
     public long Id { get; init; }
     public string Name { get; init; } = null!;
