@@ -23,7 +23,7 @@ public class WinTeamsBySeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHan
 
         document.Add(new Paragraph("\n"));
 
-        var table = new Table(2);
+        var table = new Table(2).UseAllAvailableWidth();
         table.AddCell(new Cell().Add(new Paragraph("Season: ")).SetBorder(Border.NO_BORDER));
         table.AddCell(new Cell().Add(new Paragraph(data.SeasonId.ToString())).SetBorder(Border.NO_BORDER));
 
@@ -73,11 +73,6 @@ public class WinTeamsBySeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHan
                 where serie.SeasonId == command.SeasonId
                 join game in games on serie.Id equals game.SeriesId
                 select new { serie, game }).ToList();
-
-        foreach (var x in gamesInSeason)
-        {
-            Console.WriteLine(x.serie.Id + " " + x.game.Team1Id + " " + x.game.Team2Id + " " + x.game.Winner1);
-        }
 
         var seriesIds = gamesInSeason.DistinctBy(x => x.serie.Id).Select(x => new { x.serie.Id, x.serie.Name }).ToList();
 
