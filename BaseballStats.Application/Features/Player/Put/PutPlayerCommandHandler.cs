@@ -2,14 +2,13 @@ using BaseballStats.Application.Mappers;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
-using BaseballStats.Application.Features.Player.Delete;
 using Microsoft.AspNetCore.Http;
 
 namespace BaseballStats.Application.Features.Player.Put;
 
-public class UpdatePlayerCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<UpdatePlayerCommand, RegularPlayerDto>
+public class PutPlayerCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<PutPlayerCommand, RegularPlayerDto>
 {
-    public override async Task<RegularPlayerDto> ExecuteAsync(UpdatePlayerCommand command, CancellationToken cancellationToken = default)
+    public override async Task<RegularPlayerDto> ExecuteAsync(PutPlayerCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
         var playerRepository = unitOfWork.Repository<Domain.Entities.Player>();
@@ -27,7 +26,7 @@ public class UpdatePlayerCommandHandler(IUnitOfWork unitOfWork) : CommandHandler
         return updatedPlayer.ToDto();
     }
 
-    private async Task DatabaseValidations(UpdatePlayerCommand command)
+    private async Task DatabaseValidations(PutPlayerCommand command)
     {
         var playerRepository = unitOfWork.Repository<Domain.Entities.Player>();
         var player = await playerRepository.GetByIdAsync(command.Id);

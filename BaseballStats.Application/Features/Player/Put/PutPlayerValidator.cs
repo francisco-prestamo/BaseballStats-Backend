@@ -3,10 +3,13 @@ using FluentValidation;
 
 namespace BaseballStats.Application.Features.Player.Put;
 
-public class UpdatePlayerValidator : Validator<UpdatePlayerCommand>
+public class PutPlayerValidator : Validator<PutPlayerCommand>
 {
-    public UpdatePlayerValidator()
+    public PutPlayerValidator()
     {
+        RuleFor(x => x.Id).NotEmpty().When(x => x.Id != 0)
+            .WithMessage("Id is required");
+
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required");
 
