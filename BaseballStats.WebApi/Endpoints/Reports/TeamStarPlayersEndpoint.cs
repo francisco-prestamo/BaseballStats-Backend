@@ -8,6 +8,7 @@ public class TeamStarPlayersEndpoint : Endpoint<TeamStarPlayersCommand, FileInfo
     public override void Configure()
     {
         Get("reports/teams/{teamId}/serie/{seasonId}/{seriesId}/star-players");
+        Roles("Admin", "Journalist", "TechnicalDirector");
         Summary(x => x.Summary = "Genera un reporte de los jugadores estrellas de un equipo que participa en una serie");
     }
     
