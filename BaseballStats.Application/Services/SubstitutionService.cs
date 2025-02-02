@@ -165,9 +165,6 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
         Dictionary<long, PlayerPositions> isInAlignment = new();
         foreach (var apig in alignment)
         {
-            if (apig.PlayerId == newSubstitution.PlayerInId)
-                return (false, "PlayerIn is in starting lineup");
-
             isInAlignment.Add(apig.PlayerId, apig.Position);
         }
 
