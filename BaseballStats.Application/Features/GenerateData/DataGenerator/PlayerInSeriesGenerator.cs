@@ -73,7 +73,7 @@ public static partial class DataGenerator
 
     private static (long newIterations, bool success) FillTeam(long initialIterations, long maxIterations, Dictionary<PlayerPositions, HashSet<long>> allowedPositions, ref HashSet<long> availablePlayers, ref HashSet<long> answer, int positionIndex = 0)
     {
-        if (positionIndex == ValidPlayerPositions.Count())
+        if (positionIndex >= ValidPlayerPositions.Count())
             return (initialIterations, true);
 
         var currIterations = initialIterations;
