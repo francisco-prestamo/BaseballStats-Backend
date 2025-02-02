@@ -3,9 +3,9 @@ using BaseballStats.Application.Features.Auth;
 using BaseballStats.Domain.Entities.Identity;
 using BaseballStats.Domain.Enums;
 
-namespace BaseballStats.Tests.Auth.LoginEndpointTest;
+namespace BaseballStats.Tests.Auth;
 
-public class LoginEndpointTest(WebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : TestBase(factory, databaseFixture)
+public class LoginTest(WebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : TestBase(factory, databaseFixture)
 {
     [Fact]
     public async Task LoginFailed()
@@ -48,18 +48,23 @@ public class LoginEndpointTest(WebApplicationFactory<Program> factory, DatabaseF
             Password = user.Password
         };
 
-        // Act
-        var response = await Client.PostAsync($"auth/login", JsonContent.Create(request));
-        var rspDto = await response.Content.ReadFromJsonAsync<RegisteredUserDto>();
+        try
+        {
+            // Act
+            var response = await Client.PostAsync($"auth/login", JsonContent.Create(request));
+            var rspDto = await response.Content.ReadFromJsonAsync<RegisteredUserDto>();
 
-        // Assert
-        response.EnsureSuccessStatusCode();
-        rspDto.ShouldNotBeNull();
-        rspDto.Username.ShouldBe(user.Username);
-        rspDto.Token.ShouldNotBeNullOrEmpty();
-
-        // Clean up
-        usersContext.Remove(user);
-        await DatabaseFixture.DbContext.SaveChangesAsync();
+            // Assert
+            response.EnsureSuccessStatusCode();
+            rspDto.ShouldNotBeNull();
+            rspDto.Username.ShouldBe(user.Username);
+            rspDto.Token.ShouldNotBeNullOrEmpty();
+        }
+        finally
+        {
+            // Clean up
+            usersContext.Remove(user);
+            await DatabaseFixture.DbContext.SaveChangesAsync();
+        }
     }
 }

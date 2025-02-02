@@ -27,8 +27,4 @@
       <ProjectReference Include="..\BaseballStats.WebApi\BaseballStats.WebApi.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Auth\" />
-    </ItemGroup>
-
 </Project>
