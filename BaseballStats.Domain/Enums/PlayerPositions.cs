@@ -9,7 +9,7 @@ public enum PlayerPositions
     [Display(Name = "First-Base")] FirstBase,
     [Display(Name = "Second-Base")] SecondBase,
     [Display(Name = "Third-Base")] ThirdBase,
-    [Display(Name = "Shortstop")] ShortStop,
+    [Display(Name = "Shortstop")] Shortstop,
     [Display(Name = "Left-Field")] LeftField,
     [Display(Name = "Center-Field")] CenterField,
     [Display(Name = "Right-Field")] RightField,
