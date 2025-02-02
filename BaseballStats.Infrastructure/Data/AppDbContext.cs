@@ -9,6 +9,11 @@ public class AppDbContext : DbContext
     {
     }
 
+    public AppDbContext()
+    {
+        
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

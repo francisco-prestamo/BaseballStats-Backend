@@ -16,26 +16,20 @@ builder.Services
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder
+        corsBuilder => corsBuilder
             .WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
             .AllowAnyHeader()
-           .AllowCredentials());
+            .AllowCredentials());
 });
 
-builder.Services.AddAuthenticationJwtBearer(options =>
-{
-    options.SigningKey = builder.Configuration["Jwt:SigningKey"];
-});
+builder.Services.AddAuthenticationJwtBearer(options => { options.SigningKey = builder.Configuration["Jwt:SigningKey"]; });
 builder.Services.AddAuthorization();
 
 builder.Services
     .AddFastEndpoints()
     .SwaggerDocument()
-    .AddDbContext<AppDbContext>(options =>
-    {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection"));
-    });
+    .AddDbContext<AppDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
 
 var app = builder.Build();
@@ -50,3 +44,5 @@ app.UseAuthentication()
 app.UseHttpsRedirection();
 
 app.Run();
+
+public partial class Program;

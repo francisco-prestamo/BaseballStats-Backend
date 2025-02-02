@@ -40,9 +40,9 @@ public class LoginCommandHandler(IUnitOfWork unitOfWork, IConfiguration config) 
         var user = await userRepository.FirstOrDefaultAsync(x => x.Username == command.Username);
 
         if (user is null)
-            ThrowError("Username is incorrect", StatusCodes.Status400BadRequest);
+            ThrowError("Invalid login credentials!", StatusCodes.Status400BadRequest);
 
         if (user.Password != command.Password)
-            ThrowError("Password is incorrect", StatusCodes.Status400BadRequest);
+            ThrowError("Invalid login credentials!", StatusCodes.Status400BadRequest);
     }
 }
