@@ -15,7 +15,9 @@ riderModule.iml
 
 .fake
 .env
+.editorconfig
 BaseballStats.WebApi/appsettings.json
 BaseballStats.WebApi/appsettings.Development.json
 BaseballStats.WebApi/appsettings.Test.json
+BaseballStats.WebApi/reports/
 

@@ -104,7 +104,7 @@ public class SubstitutionService(IUnitOfWork unitOfWork)
             var playerOutId = substitution.PlayerOutId;
             var oldPosition = positions[substitution.PlayerOutId];
 
-            positions.Add(substitution.PlayerInId, oldPosition);
+            positions[substitution.PlayerInId] = oldPosition;
 
             var playerInId = substitution.PlayerInId;
 

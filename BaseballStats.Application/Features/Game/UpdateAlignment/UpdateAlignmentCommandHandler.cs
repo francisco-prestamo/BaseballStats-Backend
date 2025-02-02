@@ -19,6 +19,8 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork, IHttpContextA
 
         alignedPlayerInGameRepository.DropWhere(x => x.GameId == command.GameId && x.TeamId == command.TeamId);
 
+        await unitOfWork.SaveChangesAsync(ct);
+
         var alignedPlayers = command.Alignment.Select(pip => new AlignedPlayerInGame
         {
             GameId = command.GameId,
@@ -113,12 +115,6 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork, IHttpContextA
     /// <param name="availablePositions">The positions each player can play</param>
     private ValidateSubstitutionsErrorCode ValidateSubstitutions(List<(long PlayerId, PlayerPositions Position)> initialAlignment, List<Substitution> substitutions, Dictionary<long, HashSet<PlayerPositions>> availablePositions)
     {
-        System.Console.WriteLine("Allowed positions:");
-        foreach (var kvp in availablePositions)
-        {
-            System.Console.WriteLine($"{kvp.Key}: {string.Join(", ", kvp.Value)}");
-        }
-
         var playersInAllowedPosition = 
             from pip in initialAlignment
             join ap in availablePositions on pip.PlayerId equals ap.Key
@@ -141,12 +137,6 @@ public class UpdateAlignmentCommandHandler(IUnitOfWork unitOfWork, IHttpContextA
         {
             var playerIn = substitution.PlayerInId;
             var playerOut = substitution.PlayerOutId;
-
-            System.Console.WriteLine();
-            System.Console.WriteLine($"PlayerIn: {playerIn}, PlayerOut: {playerOut}");
-            System.Console.WriteLine($"CurrentPosition: {string.Join(", ", currentPosition.Select(x => $"{x.Key}: {x.Value}"))}");
-            System.Console.WriteLine($"UsedPlayers: {string.Join(", ", usedPlayers)}");
-
 
             // players that are in the bench cannot be substituted out of the game 
             if (!isInGame(playerOut))
