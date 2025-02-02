@@ -17,7 +17,7 @@ public class WinTeamsBySeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHan
 
         var document = DocumentTools.OpenDocument("reports", "WinTeamsBySeriesReport.pdf");
 
-        document.AddTitle("Win Teams By Series Report");
+        document.AddTitle("Winnning Teams By Series Report");
 
         document.AddLine();
 
@@ -32,11 +32,11 @@ public class WinTeamsBySeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHan
         document.Add(new Paragraph("\n"));
 
         table = new Table(6);
-        table.AddCell(new Cell().Add(new Paragraph("Serie Id")));
-        table.AddCell(new Cell().Add(new Paragraph("Serie Name")));
+        table.AddCell(new Cell().Add(new Paragraph("Series Id")));
+        table.AddCell(new Cell().Add(new Paragraph("Series Name")));
         table.AddCell(new Cell().Add(new Paragraph("Team Id")));
         table.AddCell(new Cell().Add(new Paragraph("Team Name")));
-        table.AddCell(new Cell().Add(new Paragraph("Win Games")));
+        table.AddCell(new Cell().Add(new Paragraph("Games")));
         table.AddCell(new Cell().Add(new Paragraph("Technical Director")));
 
         foreach (var stats in data.SeriesStatsDto)
