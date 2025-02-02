@@ -1,4 +1,4 @@
-using BaseballStats.Application.Features.Generate;
+using BaseballStats.Application.Features.GenerateData;
 using BaseballStats.Domain.Interfaces.DataAccess;
 using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Entities.Identity;
@@ -12,52 +12,6 @@ class GenerateDataCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Genera
     {
         
     }
-
-    private List<string> FirstNames = [
-        "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", 
-        "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald", "Steven", "Paul", "Andrew", "Joshua", 
-        "Kenneth", "Kevin", "Brian", "George", "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan"
-    ];
-    private List<string> LastNames = [
-        "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", 
-        "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson", 
-        "Clark", "Rodriguez", "Lewis", "Lee", "Walker", "Hall", "Allen", "Young", "Hernandez", "King"
-    ];
-
-    private int SeriesCount = 20;
-    private int TeamCount = 20;
-    private int SeasonsCount = 5;
-
-    private List<RegisteredUser> GenerateUsers(int amount)
-    {
-        List<string> passwords = [
-            "password123", "qwerty", "abc123", "letmein", "monkey", "dragon", "111111", "baseball", "iloveyou", "trustno1"
-        ];
-
-        var users = new List<RegisteredUser>();
-        Random random = new Random();
-
-        for (int i = 0; i < amount; i++)
-        {
-            var username = (FirstNames[random.Next(0, FirstNames.Count)] + '_' + LastNames[random.Next(0, LastNames.Count)]).ToLower();
-            UserTypes userType = random.Next(0, 2) switch{
-                0 => UserTypes.Admin,
-                1 => UserTypes.TechnicalDirector,
-                _ => UserTypes.Journalist
-            };
-
-            var user = new RegisteredUser
-            {
-                Username = username,
-                Password = passwords[random.Next(0, passwords.Count)],
-                Type = userType
-            };
-            users.Add(user);
-        }
-
-        return users;
-    }
-
     private List<Team> GenerateTeams(int Amount, List<long> technicalDirectorIds)
     {
 
@@ -246,8 +200,21 @@ class GenerateDataCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<Genera
         return (series, seasons);
     }
 
-    private List<PlayerInSeries> GeneratePlayerInSeries(List<Player> players, List<Series> series, List<Team> teams)
+    private List<PlayerInSeries> GeneratePlayerInSeries(List<Player> players, List<Series> series, List<Team> teams, List<PlayerInPosition> allowedPositions)
     {
-        
+        const long playersPerTeam = 25;
+
+
     }
+
+    private List<string> FirstNames = [
+        "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", 
+        "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald", "Steven", "Paul", "Andrew", "Joshua", 
+        "Kenneth", "Kevin", "Brian", "George", "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan"
+    ];
+    private List<string> LastNames = [
+        "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", 
+        "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson", 
+        "Clark", "Rodriguez", "Lewis", "Lee", "Walker", "Hall", "Allen", "Young", "Hernandez", "King"
+    ];
 }
