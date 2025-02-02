@@ -8,6 +8,7 @@ public class WinTeamsBySeriesEndpoint : Endpoint<WinTeamsBySeriesCommand, EmptyR
     public override void Configure()
     {
         Get("reports/win-teams-by-series/{SeasonId}");
+        Roles("Admin", "Journalist", "TechnicalDirector");
         Summary(x => x.Summary = "Generate a report of the winning teams by series for a given season.");
     }
 
