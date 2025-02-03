@@ -15,7 +15,8 @@ public class PutSeasonEndpoint : Endpoint<PutSeasonCommand, SeasonDto>
 
     public override async Task HandleAsync(PutSeasonCommand command, CancellationToken ct)
     {
-        var response = await command.ExecuteAsync(ct);
-        await SendAsync(response, StatusCodes.Status200OK, ct);
+        // var response = await command.ExecuteAsync(ct);
+        var response = new SeasonDto();
+        await SendAsync(response, StatusCodes.Status403Forbidden, ct);
     }
 }
