@@ -35,8 +35,8 @@ public class PostSeriesCommandHandler(IUnitOfWork unitOfWork) : CommandHandler<P
     {
         var series = await unitOfWork.Repository<Domain.Entities.Series>().GetByIdAsync(command.Id);
         if (series != null)
-            ThrowError("Series Id already exists.", StatusCodes.Status400BadRequest);
-        
+            ThrowError("Series Id already exists.", StatusCodes.Status409Conflict);
+
         var season = await unitOfWork.Repository<Domain.Entities.Season>().GetByIdAsync(command.IdSeason);
         if (season == null)
             ThrowError("Season Id not found.", StatusCodes.Status400BadRequest);

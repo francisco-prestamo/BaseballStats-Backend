@@ -16,6 +16,6 @@ public class PostSeriesEndpoint : Endpoint<PostSeriesCommand, SeriesDto>
     public override async Task HandleAsync(PostSeriesCommand command, CancellationToken ct)
     {
         var response = await command.ExecuteAsync(ct);
-        await SendAsync(response, 200, ct);
+        await SendAsync(response, StatusCodes.Status201Created, ct);
     }
 }

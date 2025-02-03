@@ -16,6 +16,6 @@ public class DeleteSeriesEndpoint : Endpoint<DeleteSeriesCommand, SeriesDto>
     public override async Task HandleAsync(DeleteSeriesCommand command, CancellationToken cancellationToken)
     {
         var response = await command.ExecuteAsync(cancellationToken);
-        await SendAsync(response, 200, cancellationToken);
+        await SendAsync(response, StatusCodes.Status200OK, cancellationToken);
     }
 }
