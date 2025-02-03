@@ -2,7 +2,7 @@ using BaseballStats.Application.DTOs;
 using BaseballStats.Application.Features.User.GetAllUsers;
 using FastEndpoints;
 
-namespace BaseballStats.WebApi.Endpoints.User;
+namespace BaseballStats.WebApi.Endpoints.Users;
 
 public class GetAllUsersEndpoint : EndpointWithoutRequest<List<RegisteredUserDto>>
 {
