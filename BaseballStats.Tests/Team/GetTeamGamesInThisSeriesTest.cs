@@ -10,7 +10,7 @@ public class GetTeamGamesInThisSeriesTest(WebApplicationFactory<Program> factory
     public async Task GetTeamGamesInThisSeriesSuccess()
     {
         // Arrange
-        var technicalDirector = new TechnicalDirector()
+        var technicalDirector = new Domain.Entities.Identity.TechnicalDirector()
         {
             Id = Faker.Random.Long(1, 1000000000)
         };
@@ -55,7 +55,7 @@ public class GetTeamGamesInThisSeriesTest(WebApplicationFactory<Program> factory
             Date = Faker.Date.PastDateOnly(),
         }).ToList();
 
-        var technicalDirectorContext = DatabaseFixture.DbContext.Set<TechnicalDirector>();
+        var technicalDirectorContext = DatabaseFixture.DbContext.Set<Domain.Entities.Identity.TechnicalDirector>();
         var teamContext = DatabaseFixture.DbContext.Set<Domain.Entities.Team>();
         var seasonContext = DatabaseFixture.DbContext.Set<Domain.Entities.Season>();
         var seriesContext = DatabaseFixture.DbContext.Set<Domain.Entities.Series>();

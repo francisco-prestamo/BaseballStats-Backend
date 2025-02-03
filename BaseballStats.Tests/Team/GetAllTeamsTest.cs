@@ -9,7 +9,7 @@ public class GetAllTeamsTest(WebApplicationFactory<Program> factory, DatabaseFix
     public async Task GetAllTeamsSuccess()
     {
         // Arrange
-        var technicalDirector = new TechnicalDirector()
+        var technicalDirector = new Domain.Entities.Identity.TechnicalDirector()
         {
             Id = Faker.Random.Long(1, 1000000000)
         };
@@ -24,7 +24,7 @@ public class GetAllTeamsTest(WebApplicationFactory<Program> factory, DatabaseFix
             RepresentedEntity = Faker.Lorem.Word()
         }).ToList();
 
-        var technicalDirectorContext = DatabaseFixture.DbContext.Set<TechnicalDirector>();
+        var technicalDirectorContext = DatabaseFixture.DbContext.Set<Domain.Entities.Identity.TechnicalDirector>();
         var teamContext = DatabaseFixture.DbContext.Set<Domain.Entities.Team>();
 
         await technicalDirectorContext.AddAsync(technicalDirector);
