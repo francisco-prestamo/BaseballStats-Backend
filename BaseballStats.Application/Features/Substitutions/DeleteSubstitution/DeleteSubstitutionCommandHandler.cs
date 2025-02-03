@@ -18,50 +18,59 @@ public class DeleteSubstitutionCommandHandler(SubstitutionService substitutionSe
         var player_table = unitOfWork.Repository<Domain.Entities.Player>().DbSet;
         var game_table = unitOfWork.Repository<Domain.Entities.Game>().DbSet;
         var team_table = unitOfWork.Repository<Domain.Entities.Team>().DbSet;
+        var subs_table = unitOfWork.Repository<Domain.Entities.Substitution>().DbSet;
 
-        var playerIn = (
-            from pi in player_table
-            where pi.Id == command.PlayerInId
-            select pi
-        ).First();
+        var sub = (
+            from s in subs_table
+            where s.PlayerInId == command.PlayerInId && s.PlayerOutId == command.PlayerOutId && s.Time == command.Time && s.GameId == command.GameId
+            select s
+        ).Single();
 
-        var playerOut = (
-            from po in player_table
-            where po.Id == command.PlayerOutId
-            select po
-        ).First();
 
-        var game = (
-            from g in game_table
-            where g.Id == command.GameId
-            select g
-        ).First();
 
-        var team = (
-            from t in team_table
-            where t.Id == command.TeamId
-            select t
-        ).First();
+        // var playerIn = (
+        //     from pi in player_table
+        //     where pi.Id == command.PlayerInId
+        //     select pi
+        // ).First();
 
-        var entity = new Domain.Entities.Substitution()
-        {
-            PlayerInId = command.PlayerInId,
-            PlayerIn = playerIn,
-            PlayerOutId = command.PlayerOutId,
-            PlayerOut = playerOut,
-            GameId = command.GameId,
-            Game = game,
-            TeamId = command.TeamId,
-            Team = team,
-            Time = command.Time
-        };
+        // var playerOut = (
+        //     from po in player_table
+        //     where po.Id == command.PlayerOutId
+        //     select po
+        // ).First();
+
+        // var game = (
+        //     from g in game_table
+        //     where g.Id == command.GameId
+        //     select g
+        // ).First();
+
+        // var team = (
+        //     from t in team_table
+        //     where t.Id == command.TeamId
+        //     select t
+        // ).First();
+
+        // var entity = new Domain.Entities.Substitution()
+        // {
+        //     PlayerInId = command.PlayerInId,
+        //     PlayerIn = playerIn,
+        //     PlayerOutId = command.PlayerOutId,
+        //     PlayerOut = playerOut,
+        //     GameId = command.GameId,
+        //     Game = game,
+        //     TeamId = command.TeamId,
+        //     Team = team,
+        //     Time = command.Time
+        // };
 
         var repository = unitOfWork.Repository<Domain.Entities.Substitution>();
 
-        var deletedSubstitution = (await repository.DeleteAsync(entity))!;
+        repository.DropWhere(s => s.PlayerInId == command.PlayerInId && s.PlayerOutId == command.PlayerOutId && s.Time == command.Time && s.GameId == command.GameId);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return deletedSubstitution.ToCRUDDto();
+        return sub.ToCRUDDto();
     }
 
     private async Task DatabaseValidations(DeleteSubstitutionCommand command)
