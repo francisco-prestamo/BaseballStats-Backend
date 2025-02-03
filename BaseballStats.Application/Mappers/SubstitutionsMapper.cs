@@ -13,4 +13,17 @@ public static class SubstitutionsMapper
             Team2Substitutions = substitutions.Item2
         };
     }
+
+    public static SingleSubstitutionCRUDDto ToCRUDDto(this Substitution substitution)
+    {
+        return new SingleSubstitutionCRUDDto()
+        {
+            Id = (substitution.PlayerInId, substitution.PlayerOutId, substitution.GameId, substitution.Time).GetHashCode(),
+            PlayerInId = substitution.PlayerInId,
+            PlayerOutId = substitution.PlayerOutId,
+            GameId = substitution.GameId,
+            TeamId = substitution.TeamId,
+            Time = substitution.Time
+        };
+    }
 }

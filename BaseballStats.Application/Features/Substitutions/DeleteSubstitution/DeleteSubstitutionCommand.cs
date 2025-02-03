@@ -1,10 +1,10 @@
 using BaseballStats.Application.DTOs;
 using FastEndpoints;
 
-namespace BaseballStats.Application.Features.Game.PostSubstitution;
+namespace BaseballStats.Application.Features.Substitutions.Delete;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public record PostSubstitutionCommand : ICommand<SingleSubstitutionCRUDDto>
+public record DeleteSubstitutionCommand : ICommand<SingleSubstitutionCRUDDto>
 {
     public long GameId { get; init; }
     public long TeamId { get; init; }

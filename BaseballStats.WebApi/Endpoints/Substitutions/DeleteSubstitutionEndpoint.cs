@@ -1,6 +1,6 @@
 using FastEndpoints;
 using BaseballStats.Application.DTOs;
-using BaseballStats.Application.Features.Game.DeleteSubstitution;
+using BaseballStats.Application.Features.Substitutions.Delete;
 
 namespace BaseballStats.WebApi.Endpoints.Game;
 

@@ -7,11 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using BaseballStats.Application.Services;
 using BaseballStats.Domain.Enums;
 
-namespace BaseballStats.Application.Features.Game.PostSubstitution;
+namespace BaseballStats.Application.Features.Substitutions.Delete;
 
-public class PostSubstitutionCommandHandler(SubstitutionService substitutionService, IUnitOfWork unitOfWork) : CommandHandler<PostSubstitutionCommand, SingleSubstitutionCRUDDto>
+public class DeleteSubstitutionCommandHandler(SubstitutionService substitutionService, IUnitOfWork unitOfWork) : CommandHandler<DeleteSubstitutionCommand, SingleSubstitutionCRUDDto>
 {
-    public override async Task<SingleSubstitutionCRUDDto> ExecuteAsync(PostSubstitutionCommand command, CancellationToken cancellationToken = default)
+    public override async Task<SingleSubstitutionCRUDDto> ExecuteAsync(DeleteSubstitutionCommand command, CancellationToken cancellationToken = default)
     {
         await DatabaseValidations(command);
 
@@ -58,20 +58,13 @@ public class PostSubstitutionCommandHandler(SubstitutionService substitutionServ
 
         var repository = unitOfWork.Repository<Domain.Entities.Substitution>();
 
-        var createdSubstitution = await repository.AddAsync(entity);
+        var deletedSubstitution = (await repository.DeleteAsync(entity))!;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new SingleSubstitutionCRUDDto()
-        {
-            Id = command.GameId,
-            TeamId = command.TeamId,
-            PlayerInId = command.PlayerInId,
-            PlayerOutId = command.PlayerOutId,
-            Time = command.Time
-        };
+        return deletedSubstitution.ToCRUDDto();
     }
 
-    private async Task DatabaseValidations(PostSubstitutionCommand command)
+    private async Task DatabaseValidations(DeleteSubstitutionCommand command)
     {
         var gameRepository = unitOfWork.Repository<Domain.Entities.Game>();
         var game = await gameRepository.GetByIdAsync(command.GameId);
@@ -86,14 +79,14 @@ public class PostSubstitutionCommandHandler(SubstitutionService substitutionServ
         if (team1Id != command.TeamId && team2Id != command.TeamId)
             ThrowError("TeamId not found in the game", StatusCodes.Status404NotFound);
 
-        var canAdd = substitutionService.CanAddSubstitution(command.GameId, command.TeamId, new Domain.Entities.Substitution
+        var canDelete = substitutionService.CanDeleteSubstitution(command.GameId, command.TeamId, new Domain.Entities.Substitution
         {
             PlayerInId = command.PlayerInId,
             PlayerOutId = command.PlayerOutId,
             Time = command.Time
         });
 
-        if (!canAdd.Result.status)
-            ThrowError(canAdd.Result.errorMessage, StatusCodes.Status400BadRequest);
+        if (!canDelete.Result.status)
+            ThrowError(canDelete.Result.errorMessage, StatusCodes.Status400BadRequest);
     }
 }
