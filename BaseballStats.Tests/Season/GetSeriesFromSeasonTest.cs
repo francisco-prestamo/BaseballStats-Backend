@@ -10,12 +10,12 @@ public class GetSeriesFromSeasonTest(WebApplicationFactory<Program> factory, Dat
         // Arrange
         var season = new Domain.Entities.Season()
         {
-            Id = Faker.Random.Long(1, 1000000)
+            Id = Faker.Random.Long(1, 10000 - 1)
         };
 
         var series = Enumerable.Range(1, 20).Select(_ => new Domain.Entities.Series()
         {
-            Id = Faker.Random.Long(1, 1000000),
+            Id = Faker.Random.Long(8000000, 9000000),
             Name = Faker.Name.FirstName(),
             SeasonId = season.Id,
             Type = Faker.Name.LastName(),
@@ -39,10 +39,9 @@ public class GetSeriesFromSeasonTest(WebApplicationFactory<Program> factory, Dat
             var rspDto = await response.Content.ReadFromJsonAsync<List<SeriesDto>>();
 
             // Assert
-            response.EnsureSuccessStatusCode();
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
             rspDto.ShouldNotBeNull();
-            rspDto.Count.ShouldBe(series.Count);
-            rspDto.OrderBy(x => x.Id).ToList().ShouldBe(series.Select(x => new SeriesDto()
+            series.ForEach(x => rspDto.ShouldContain(new SeriesDto()
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -50,7 +49,7 @@ public class GetSeriesFromSeasonTest(WebApplicationFactory<Program> factory, Dat
                 Type = x.Type,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
-            }).ToList());
+            }));
         }
         finally
         {

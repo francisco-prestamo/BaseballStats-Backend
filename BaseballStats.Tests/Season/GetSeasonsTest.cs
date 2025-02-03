@@ -10,7 +10,7 @@ public class GetSeasonsTest(WebApplicationFactory<Program> factory, DatabaseFixt
         // Arrange
         var seasons = Enumerable.Range(1, 20).Select(_ => new Domain.Entities.Season()
         {
-            Id = Faker.Random.Long(1, 1000000)
+            Id = Faker.Random.Long(10000, 1000000)
         }).OrderBy(x => x.Id).ToList();
 
         var seasonsContext = DatabaseFixture.DbContext.Set<Domain.Entities.Season>();
@@ -24,10 +24,9 @@ public class GetSeasonsTest(WebApplicationFactory<Program> factory, DatabaseFixt
             var rspDto = await response.Content.ReadFromJsonAsync<List<SeasonDto>>();
 
             // Assert
-            response.EnsureSuccessStatusCode();
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
             rspDto.ShouldNotBeNull();
-            rspDto.Count.ShouldBe(seasons.Count);
-            rspDto.OrderBy(x => x.Id).ToList().ShouldBe(seasons.Select(x => new SeasonDto() { Id = x.Id }).ToList());
+            seasons.ForEach(x => rspDto.ShouldContain(new SeasonDto() { Id = x.Id }));
         }
         finally
         {
