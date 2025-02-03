@@ -1,5 +1,4 @@
 ﻿using BaseballStats.Application.DTOs;
-using BaseballStats.Domain.Entities.Identity;
 
 namespace BaseballStats.Tests.Team;
 

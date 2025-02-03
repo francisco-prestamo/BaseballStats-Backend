@@ -1,13 +1,28 @@
 ﻿using BaseballStats.Application.DTOs;
 
-namespace BaseballStats.Tests.Team;
+namespace BaseballStats.Tests.Game;
 
-public class GetTeamGamesInThisSeriesTest(WebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : TestBase(factory, databaseFixture)
+public class GetAllGamesTest(WebApplicationFactory<Program> factory, DatabaseFixture databaseFixture) : TestBase(factory, databaseFixture)
 {
     [Fact]
-    public async Task GetTeamGamesInThisSeriesSuccess()
+    public async Task GetAllGames()
     {
         // Arrange
+        var season = new Domain.Entities.Season()
+        {
+            Id = Faker.Random.Long(1, 1000000000)
+        };
+
+        var serie = new Domain.Entities.Series()
+        {
+            Id = Faker.Random.Long(1, 1000000000),
+            SeasonId = season.Id,
+            Name = Faker.Lorem.Word(),
+            Type = Faker.Lorem.Word(),
+            StartDate = Faker.Date.PastDateOnly(),
+            EndDate = Faker.Date.PastDateOnly()
+        };
+        
         var technicalDirector = new Domain.Entities.Identity.TechnicalDirector()
         {
             Id = Faker.Random.Long(1, 1000000000)
@@ -33,60 +48,53 @@ public class GetTeamGamesInThisSeriesTest(WebApplicationFactory<Program> factory
             RepresentedEntity = Faker.Lorem.Word()
         };
 
-        var season = new Domain.Entities.Season()
-        {
-            Id = Faker.Random.Long(1, 1000000000)
-        };
-
-        var series = new Domain.Entities.Series()
+        var games = Enumerable.Range(1, 20).Select(_ => new Domain.Entities.Game()
         {
             Id = Faker.Random.Long(1, 1000000000),
-            SeasonId = season.Id
-        };
-
-        var games = Enumerable.Range(1, 5).Select(_ => new Domain.Entities.Game()
-        {
-            Id = Faker.Random.Long(1, 1000000000),
-            SeriesId = series.Id,
+            SeriesId = serie.Id,
             Team1Id = team1.Id,
             Team2Id = team2.Id,
             Date = Faker.Date.PastDateOnly(),
+            Runs1 = 10,
+            Runs2 = 5,
+            Winner1 = true
         }).ToList();
 
+        var seasonContext = DatabaseFixture.DbContext.Set<Domain.Entities.Season>();
+        var serieContext = DatabaseFixture.DbContext.Set<Domain.Entities.Series>();
         var technicalDirectorContext = DatabaseFixture.DbContext.Set<Domain.Entities.Identity.TechnicalDirector>();
         var teamContext = DatabaseFixture.DbContext.Set<Domain.Entities.Team>();
-        var seasonContext = DatabaseFixture.DbContext.Set<Domain.Entities.Season>();
-        var seriesContext = DatabaseFixture.DbContext.Set<Domain.Entities.Series>();
         var gameContext = DatabaseFixture.DbContext.Set<Domain.Entities.Game>();
 
+        await seasonContext.AddAsync(season);
+        await serieContext.AddAsync(serie);
         await technicalDirectorContext.AddAsync(technicalDirector);
         await teamContext.AddAsync(team1);
         await teamContext.AddAsync(team2);
-        await seasonContext.AddAsync(season);
-        await seriesContext.AddAsync(series);
         await gameContext.AddRangeAsync(games);
         await DatabaseFixture.DbContext.SaveChangesAsync();
 
         try
         {
             // Act
-            var response = await Admin.GetAsync($"teams/{team1.Id}/serie/{season.Id}/{series.Id}/games");
-            var rspDto = await response.Content.ReadFromJsonAsync<List<GameWithTeamsDto>>();
+            var response = await Admin.GetAsync("games");
+            var rspDto = await response.Content.ReadFromJsonAsync<List<GameDto>>();
 
             // Assert
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             rspDto.ShouldNotBeNull();
-            games.ForEach(x => rspDto.ShouldContain(y => y.Id == x.Id && y.Team1.Id == x.Team1Id && y.Team2.Id == x.Team2Id));
+            games.ForEach(x => rspDto.ShouldContain(y => y.Id == x.Id));
         }
         finally
         {
             // Clean up
+
             gameContext.RemoveRange(games);
-            seriesContext.Remove(series);
-            seasonContext.Remove(season);
-            teamContext.Remove(team1);
             teamContext.Remove(team2);
+            teamContext.Remove(team1);
             technicalDirectorContext.Remove(technicalDirector);
+            serieContext.Remove(serie);
+            seasonContext.Remove(season);
             await DatabaseFixture.DbContext.SaveChangesAsync();
         }
     }
