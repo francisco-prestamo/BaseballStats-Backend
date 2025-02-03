@@ -17,9 +17,7 @@ public class GetTeamsFromSeriesCommandHandler(TeamWithExtrasService teamWithExtr
 
         var seriesId = command.SeriesId;
 
-        // teams with at least one player in the series
-        // var teams = teamWithExtrasRepository.GetTeamsWithExtrasWithPlayerInSeries(seriesId);
-        var teams = await teamWithExtrasService.GetTeamsWithExtrasWithPlayerInSeriesAsync(seriesId);
+        var teams = await teamWithExtrasService.GetTeamsWithExtrasThatPlayedInSeriesAsync(seriesId);
 
         var teamWithExtrasDtos = teams.Select(x => x.ToDto());
         return teamWithExtrasDtos.ToList();
@@ -38,5 +36,8 @@ public class GetTeamsFromSeriesCommandHandler(TeamWithExtrasService teamWithExtr
 
         if (series is null)
             ThrowError("SeriesId not found", StatusCodes.Status404NotFound);
+
+        if (series.SeasonId != season.Id)
+            ThrowError("SeriesId not dound", StatusCodes.Status404NotFound);
     }
 }

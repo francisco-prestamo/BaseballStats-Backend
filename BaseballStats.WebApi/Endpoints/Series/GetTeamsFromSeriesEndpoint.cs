@@ -10,7 +10,7 @@ public class GetTeamsFromSeriesEndpoint : Endpoint<GetTeamsFromSeriesCommand, Li
     {
         Get("series/{SeasonId}/{SeriesId}/teams");
         Roles("Journalist", "TechnicalDirector", "Admin");
-        Summary(x => x.Summary = "Obtiene todos los equipos con al menos un jugador en una serie");
+        Summary(x => x.Summary = "Get teams that have played in a series");
     }
 
     public override async Task HandleAsync(GetTeamsFromSeriesCommand command, CancellationToken ct)
