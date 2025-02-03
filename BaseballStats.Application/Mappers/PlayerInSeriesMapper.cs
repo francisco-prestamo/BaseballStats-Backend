@@ -12,7 +12,7 @@ public static class PlayerInSeriesMapper
             PlayerId = entity.PlayerId,
             SerieId = entity.SeriesId,
             SeasonId = seasonId,
-            TeamId = entity.TeamId!.Value
+            TeamId = entity.TeamId ?? 0
         };
     }
 }
