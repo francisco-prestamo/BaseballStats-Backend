@@ -4,7 +4,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private static List<Domain.Entities.Team> GenerateTeams(int Amount, List<long> technicalDirectorIds)
+    public static List<Domain.Entities.Team> GenerateTeams(int Amount, List<long> technicalDirectorIds)
     {
 
         List<string> AnimalNames = [
@@ -56,6 +56,7 @@ public static partial class DataGenerator
             
             var team = new Domain.Entities.Team
             {
+                Id = random.Next(),
                 Name = "The " + adjective + ' ' + animalName,
                 Color = colorNames[random.Next(0, colorNames.Count)],
                 Initials = adjective[0].ToString() + animalName[0].ToString(),

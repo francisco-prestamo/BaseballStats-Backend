@@ -2,7 +2,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private static List<Domain.Entities.Pitcher> GeneratePitchers(List<long> playerIds)
+    public static List<Domain.Entities.Pitcher> GeneratePitchers(List<long> playerIds)
     {
         var random = new Random(RandomSeed);
 

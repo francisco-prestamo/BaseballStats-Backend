@@ -2,7 +2,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private static List<Domain.Entities.Player> GeneratePlayers(int Amount)
+    public static List<Domain.Entities.Player> GeneratePlayers(int Amount)
     {
         var random = new Random(RandomSeed + 1);
         var players = new List<Domain.Entities.Player>();
@@ -15,6 +15,7 @@ public static partial class DataGenerator
 
             var player = new Domain.Entities.Player
             {
+                Id = random.Next(),
                 Name = name,
                 Age = age,
                 YearsOfExperience = yearsOfExperience,

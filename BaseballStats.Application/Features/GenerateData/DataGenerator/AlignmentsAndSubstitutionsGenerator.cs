@@ -1,5 +1,3 @@
-using System.Drawing;
-using System.Formats.Asn1;
 using BaseballStats.Domain.Entities;
 using BaseballStats.Domain.Enums;
 
@@ -8,7 +6,51 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 public static partial class DataGenerator
 {
 
-    
+    public static (List<AlignedPlayerInGame> alignedPlayerInGames, List<Substitution> substitutions) GenerateAlignmentsAndSubstitutions(List<Domain.Entities.Player> players, List<Domain.Entities.Game> games, List<Domain.Entities.PlayerInPosition> playerInPositions, List<Domain.Entities.PlayerInSeries> playerInSeries)
+    {
+        var answ = new List<AlignedPlayerInGame>();
+        var substitutions = new List<Substitution>();
+
+        var playersByPosition = (
+            from pip in playerInPositions
+            group pip.PlayerId by pip.Position into g
+            select new { Position = g.Key, Players = g.ToHashSet() }
+        ).ToDictionary(x => x.Position, x => x.Players);
+
+        foreach(var game in games)
+        {
+            var team1Players = (
+                from pis in playerInSeries
+                where pis.SeriesId == game.SeriesId && pis.TeamId == game.Team1Id
+                select pis.PlayerId
+            ).ToList();
+
+            var initialAlignment1 = new List<AlignedPlayerInGame>();
+            var availablePlayers1 = team1Players.ToHashSet();
+            GenerateInitialAlignment(game.Team1Id, game.Id, playersByPosition, ref availablePlayers1, ref initialAlignment1);
+
+            var team2Players = (
+                from pis in playerInSeries
+                where pis.SeriesId == game.SeriesId && pis.TeamId == game.Team2Id
+                select pis.PlayerId
+            ).ToList();
+
+            var initialAlignment2 = new List<AlignedPlayerInGame>();
+            var availablePlayers2 = team2Players.ToHashSet();
+            GenerateInitialAlignment(game.Team2Id, game.Id, playersByPosition, ref availablePlayers2, ref initialAlignment2);
+
+            answ.AddRange(initialAlignment1);
+            answ.AddRange(initialAlignment2);
+
+            var team1Substitutions = GenerateSubstitutions(game.Id, game.Team1Id, initialAlignment1, playersByPosition, team1Players);
+            var team2Substitutions = GenerateSubstitutions(game.Id, game.Team2Id, initialAlignment2, playersByPosition, team2Players);
+
+            substitutions.AddRange(team1Substitutions);
+            substitutions.AddRange(team2Substitutions);
+        }
+
+        return (answ, substitutions);
+    }
 
     private static bool GenerateInitialAlignment(long teamId, long gameId, Dictionary<PlayerPositions, HashSet<long>> playersByPosition, ref HashSet<long> availablePlayers, ref List<AlignedPlayerInGame> answ, int positionIndex = 0)
     {

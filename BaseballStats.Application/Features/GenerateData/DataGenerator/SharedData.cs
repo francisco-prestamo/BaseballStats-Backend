@@ -4,7 +4,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private const int RandomSeed = 1;
+    private const int RandomSeed = 421234;
 
     private static List<PlayerPositions> ValidPlayerPositions = [
         PlayerPositions.Pitcher,

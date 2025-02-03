@@ -6,7 +6,7 @@ public static partial class DataGenerator
 {
     const long PlayersPerTeam = 25;
         
-    private static List<Domain.Entities.PlayerInSeries> GeneratePlayerInSeries(List<Domain.Entities.Player> players, List<Domain.Entities.Series> series, List<Domain.Entities.Team> teams, List<Domain.Entities.PlayerInPosition> playerInPositions)
+    public static List<Domain.Entities.PlayerInSeries> GeneratePlayerInSeries(List<Domain.Entities.Player> players, List<Domain.Entities.Series> series, List<Domain.Entities.Team> teams, List<Domain.Entities.PlayerInPosition> playerInPositions)
     {
         const long maxIterations = 10_000_000;
 

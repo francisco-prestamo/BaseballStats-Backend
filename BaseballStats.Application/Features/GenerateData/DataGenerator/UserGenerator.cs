@@ -5,7 +5,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private static List<RegisteredUser> GenerateUsers(int amount)
+    public static List<RegisteredUser> GenerateUsers(int amount)
     {
         List<string> passwords = [
             "password123", "qwerty", "abc123", "letmein", "monkey", "dragon", "111111", "baseball", "iloveyou", "trustno1"
@@ -25,6 +25,7 @@ public static partial class DataGenerator
 
             var user = new RegisteredUser
             {
+                Id = random.NextInt64(),
                 Username = username,
                 Password = passwords[random.Next(0, passwords.Count)],
                 Type = userType
@@ -34,6 +35,7 @@ public static partial class DataGenerator
 
         users.Add(new RegisteredUser()
         {
+            Id = random.NextInt64(),
             Username = "admin",
             Password = "admin",
             Type = UserTypes.Admin

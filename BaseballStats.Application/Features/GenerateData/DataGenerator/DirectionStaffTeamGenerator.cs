@@ -2,7 +2,7 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator
 {
-    private static List<Domain.Entities.DirectionStaffTeam> GenerateDirectionStaffTeam(int Amount, List<Domain.Entities.DirectionStaff> directionStaffs, List<Domain.Entities.Team> teams)
+    public static List<Domain.Entities.DirectionStaffTeam> GenerateDirectionStaffTeam(int Amount, List<Domain.Entities.DirectionStaff> directionStaffs, List<Domain.Entities.Team> teams)
     {
         var random = new Random(RandomSeed + 1);
         var directionStaffTeams = new List<Domain.Entities.DirectionStaffTeam>();
@@ -22,6 +22,6 @@ public static partial class DataGenerator
             }
         }
 
-        return directionStaffTeams;
+        return directionStaffTeams.DistinctBy(x => new {x.DirectionStaffId, x.TeamId}).ToList();
     }
 }

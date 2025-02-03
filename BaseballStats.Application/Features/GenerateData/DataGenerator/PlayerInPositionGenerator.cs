@@ -5,11 +5,10 @@ namespace BaseballStats.Application.Features.GenerateData.DataGenerator;
 
 public static partial class DataGenerator 
 {
-    private static List<Domain.Entities.PlayerInPosition> GeneratePlayerInPosition(int Amount, List<Domain.Entities.Player> players)
+    public static List<Domain.Entities.PlayerInPosition> GeneratePlayerInPosition(int Amount, List<Domain.Entities.Player> players)
     {
         var random = new Random(RandomSeed + 9);
         var playerInPositions = new List<Domain.Entities.PlayerInPosition>();
-        
 
         var playerSetWithAllPlayers = new HashSet<long>(players.Select(x => x.Id));
         int pos = 0;
@@ -24,6 +23,7 @@ public static partial class DataGenerator
                 PlayerId = playerId,
                 Position = position
             };
+
             playerInPositions.Add(playerInPosition);
             playerSetWithAllPlayers.Remove(playerId);
             pos = (pos + 1) % ValidPlayerPositions.Count;
