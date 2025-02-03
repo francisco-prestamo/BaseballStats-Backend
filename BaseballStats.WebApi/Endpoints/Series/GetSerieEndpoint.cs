@@ -16,6 +16,6 @@ public class GetSerieEndpoint : Endpoint<GetSerieCommand, SeriesDto>
     public override async Task HandleAsync(GetSerieCommand command, CancellationToken ct)
     {
         var response = await command.ExecuteAsync(ct);
-        await SendAsync(response, 200, ct);
+        await SendAsync(response, StatusCodes.Status200OK, ct);
     }
 }
