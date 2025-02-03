@@ -1,11 +1,11 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace BaseballStats.Application.Features.Game.DeleteSubstitution;
+namespace BaseballStats.Application.Features.Substitutions.Post;
 
-public class DeleteSubstitutionValidator : Validator<DeleteSubstitutionCommand>
+public class PostSubstitutionValidator : Validator<PostSubstitutionCommand>
 {
-    public DeleteSubstitutionValidator()
+    public PostSubstitutionValidator()
     {
         RuleFor(x => x.GameId)
             .NotEmpty().WithMessage("GameId is required")
