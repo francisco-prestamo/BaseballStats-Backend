@@ -9,7 +9,7 @@ public class DeleteStarPlayerInPositionEndpoint : Endpoint<DeleteStarPlayerInPos
 {
     public override void Configure()
     {
-        Delete("starPlayerInPosition");
+        Delete("starPlayerInPosition/{SeasonId}/{SeriesId}/{PlayerId}/{Position}");
         Roles("Admin");
         Summary(x => x.Summary = "Remove a player as a star player in a position for a given series");
     }
