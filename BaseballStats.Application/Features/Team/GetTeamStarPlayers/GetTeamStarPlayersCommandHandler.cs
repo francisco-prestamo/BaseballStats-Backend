@@ -18,16 +18,18 @@ public class GetTeamStarPlayersCommandHandler(IUnitOfWork unitOfWork) : CommandH
         var playerInSeries = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
         var playerTable = unitOfWork.Repository<Domain.Entities.PlayerInSeries>().DbSet;
 
-        var starPlayersInTeamSerie =
-            (from ps in starPlayers
-            join p in playerInSeries on ps.PlayerId equals p.PlayerId
-            join pl in playerTable on p.PlayerId equals pl.PlayerId
-            where ps.SeriesId == command.SeriesId && p.TeamId == command.TeamId
-            select new { pl.Player, ps.PlayerInPosition }).Distinct();
+        var starPlayersInTeamSerie = (
+            from spip in starPlayers
+            join pis in playerInSeries on new { spip.PlayerId, spip.SeriesId } equals new { pis.PlayerId, pis.SeriesId }
+            join p in playerTable on spip.PlayerId equals p.PlayerId
+            where spip.SeriesId == command.SeriesId && pis.TeamId == command.TeamId
+            select new { p.Player, spip.PlayerInPosition }
+        ).Distinct();
 
         var playersInPositionDto = starPlayersInTeamSerie.Select(
             x => new Alignment
             {
+                Id = x.Player.Id,
                 Name = x.Player.Name,
                 Age = x.Player.Age,
                 YearsOfExperience = x.Player.YearsOfExperience,
