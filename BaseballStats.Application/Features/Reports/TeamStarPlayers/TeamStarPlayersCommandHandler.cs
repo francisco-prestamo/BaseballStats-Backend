@@ -3,10 +3,11 @@ using BaseballStats.Application.Utilities;
 using FastEndpoints;
 using iText.Layout.Borders;
 using iText.Layout.Element;
+using BaseballStats.Domain.Interfaces.DataAccess;
 
 namespace BaseballStats.Application.Features.Reports.TeamStarPlayers;
 
-public class TeamStarPlayersCommandHandler : CommandHandler<TeamStarPlayersCommand, FileInfo>
+public class TeamStarPlayersCommandHandler(IUnitOfWork unitofwork) : CommandHandler<TeamStarPlayersCommand, FileInfo>
 {
     public override async Task<FileInfo> ExecuteAsync(TeamStarPlayersCommand command, CancellationToken ct = new CancellationToken())
     {
@@ -16,6 +17,9 @@ public class TeamStarPlayersCommandHandler : CommandHandler<TeamStarPlayersComma
             SeriesId = command.SeriesId,
             TeamId = command.TeamId
         }.ExecuteAsync(ct);
+
+        var series = await unitofwork.Repository<Domain.Entities.Series>().GetByIdAsync(command.SeriesId);
+        var team = await unitofwork.Repository<Domain.Entities.Team>().GetByIdAsync(command.TeamId);
 
         var document = DocumentTools.OpenDocument("reports", "team-star-players.pdf");
 
@@ -29,9 +33,9 @@ public class TeamStarPlayersCommandHandler : CommandHandler<TeamStarPlayersComma
         table.AddCell(new Cell().Add(new Paragraph("Season: ")).SetBorder(Border.NO_BORDER));
         table.AddCell(new Cell().Add(new Paragraph(command.SeasonId.ToString())).SetBorder(Border.NO_BORDER));
         table.AddCell(new Cell().Add(new Paragraph("Series: ")).SetBorder(Border.NO_BORDER));
-        table.AddCell(new Cell().Add(new Paragraph(command.SeriesId.ToString())).SetBorder(Border.NO_BORDER));
+        table.AddCell(new Cell().Add(new Paragraph($"{series!.Name.ToString()} (ID: {command.SeriesId.ToString()})")).SetBorder(Border.NO_BORDER));
         table.AddCell(new Cell().Add(new Paragraph("Team: ")).SetBorder(Border.NO_BORDER));
-        table.AddCell(new Cell().Add(new Paragraph(command.TeamId.ToString())).SetBorder(Border.NO_BORDER));
+        table.AddCell(new Cell().Add(new Paragraph($"{team!.Name.ToString()} (ID: {command.TeamId.ToString()})")).SetBorder(Border.NO_BORDER));
 
         document.Add(table);
 
